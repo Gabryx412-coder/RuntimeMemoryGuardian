@@ -78,6 +78,16 @@ public:
     ///        before or during monitoring.
     void setBaseline(rmg::integrity::IntegrityBaseline baseline);
 
+    /// @brief Returns the currently installed baseline, if any has been set
+    ///        via setBaseline(). Enables callers (such as the
+    ///        RuntimeMemoryGuardian facade) to run an on-demand
+    ///        IntegrityChecker::verify() pass using the same baseline
+    ///        ProcessMonitor's own cycles verify against, without
+    ///        duplicating baseline state.
+    [[nodiscard]] const std::optional<rmg::integrity::IntegrityBaseline>& baseline() const noexcept {
+        return baseline_;
+    }
+
     /// @brief Starts a background thread that calls runOnce() every
     ///        config.pollInterval until stop() is called. No-op if already
     ///        running.

@@ -1,0 +1,22 @@
+// ==============================================================================
+// Runtime Memory Guardian
+// File: include/rmg/version.hpp (generated from version.hpp.in by CMake)
+//
+// DO NOT EDIT THE GENERATED FILE DIRECTLY. Edit the version numbers in the
+// root CMakeLists.txt (RMG_VERSION_MAJOR/MINOR/PATCH) instead; this template
+// is re-configured automatically on the next CMake run.
+// ==============================================================================
+
+#pragma once
+
+#include <string_view>
+
+namespace rmg {
+
+inline constexpr int VERSION_MAJOR = @RMG_VERSION_MAJOR@;
+inline constexpr int VERSION_MINOR = @RMG_VERSION_MINOR@;
+inline constexpr int VERSION_PATCH = @RMG_VERSION_PATCH@;
+
+inline constexpr std::string_view VERSION_STRING = "@RMG_VERSION@";
+
+} // namespace rmg

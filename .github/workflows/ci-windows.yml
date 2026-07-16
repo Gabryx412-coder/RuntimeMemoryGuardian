@@ -1,0 +1,51 @@
+name: CI (Windows)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: MSVC / ${{ matrix.build_type }}
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+            -DRMG_BUILD_TESTS=ON `
+            -DRMG_BUILD_EXAMPLES=ON `
+            -DRMG_BUILD_BENCHMARKS=OFF `
+            -DRMG_BUILD_TOOLS=ON `
+            -DRMG_WARNINGS_AS_ERRORS=ON
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} --parallel
+
+      - name: Run tests
+        working-directory: build
+        run: ctest -C ${{ matrix.build_type }} --output-on-failure --parallel 4
+
+      - name: Smoke-test rmg-cli
+        run: .\build\tools\${{ matrix.build_type }}\rmg-cli.exe --self --list-modules
+
+      - name: Smoke-test examples
+        run: |
+          .\build\examples\${{ matrix.build_type }}\01_basic_integrity_check.exe
+          .\build\examples\${{ matrix.build_type }}\02_memory_scanning.exe
+          .\build\examples\${{ matrix.build_type }}\03_hook_detection.exe
+          .\build\examples\${{ matrix.build_type }}\04_module_monitoring.exe
