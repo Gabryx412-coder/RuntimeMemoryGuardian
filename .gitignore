@@ -1,0 +1,39 @@
+# Build directories
+build/
+build-*/
+out/
+cmake-build-*/
+
+# Generated files
+generated/
+compile_commands.json
+CMakeUserPresets.json
+
+# IDE
+.vs/
+.vscode/
+*.user
+.idea/
+
+# Doxygen output
+docs/api/html/
+docs/api/xml/
+docs/api/latex/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Object files / binaries
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+
+# Baseline artifacts produced by tools/baseline-generator
+*.rmgbaseline

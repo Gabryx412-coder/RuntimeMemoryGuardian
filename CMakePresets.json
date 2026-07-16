@@ -1,0 +1,100 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "linux-debug",
+      "inherits": "base",
+      "displayName": "Linux Debug (GCC/Clang)",
+      "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RMG_BUILD_TESTS": "ON",
+        "RMG_BUILD_EXAMPLES": "ON",
+        "RMG_BUILD_BENCHMARKS": "OFF",
+        "RMG_ENABLE_SANITIZERS": "ON",
+        "RMG_WARNINGS_AS_ERRORS": "ON"
+      }
+    },
+    {
+      "name": "linux-release",
+      "inherits": "base",
+      "displayName": "Linux Release (GCC/Clang)",
+      "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RMG_BUILD_TESTS": "ON",
+        "RMG_BUILD_EXAMPLES": "ON",
+        "RMG_BUILD_BENCHMARKS": "ON",
+        "RMG_ENABLE_SANITIZERS": "OFF"
+      }
+    },
+    {
+      "name": "windows-msvc-release",
+      "inherits": "base",
+      "displayName": "Windows Release (MSVC)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RMG_BUILD_TESTS": "ON",
+        "RMG_BUILD_EXAMPLES": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
+    },
+    {
+      "name": "windows-msvc-release",
+      "configurePreset": "windows-msvc-release",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": false }
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}

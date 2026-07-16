@@ -1,0 +1,14 @@
+# ==============================================================================
+# RuntimeMemoryGuardianConfig.cmake.in
+#
+# Consumed by `find_package(RuntimeMemoryGuardian)` in downstream projects.
+# Provides the imported target RMG::rmg.
+# ==============================================================================
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+include("${CMAKE_CURRENT_LIST_DIR}/RuntimeMemoryGuardianTargets.cmake")
+
+check_required_components(RuntimeMemoryGuardian)

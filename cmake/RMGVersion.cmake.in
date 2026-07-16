@@ -1,0 +1,16 @@
+# ==============================================================================
+# RMGVersion.cmake.in
+#
+# Reserved for future use: a standalone version-info CMake module that can be
+# included by downstream projects wishing to query the installed
+# Runtime Memory Guardian version without parsing headers.
+#
+# TODO(#version-module): Populate with @RMG_VERSION_MAJOR@ / @RMG_VERSION_MINOR@ /
+#                         @RMG_VERSION_PATCH@ substitutions once the packaging
+#                         workflow (Parte 18/19) is finalized.
+# ==============================================================================
+
+set(RMG_PACKAGE_VERSION_MAJOR "@RMG_VERSION_MAJOR@")
+set(RMG_PACKAGE_VERSION_MINOR "@RMG_VERSION_MINOR@")
+set(RMG_PACKAGE_VERSION_PATCH "@RMG_VERSION_PATCH@")
+set(RMG_PACKAGE_VERSION "@RMG_VERSION@")

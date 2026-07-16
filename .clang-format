@@ -1,0 +1,45 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++20
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+
+AccessModifierOffset: -4
+NamespaceIndentation: None
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+
+BreakBeforeBraces: Attach
+Cpp11BracedListStyle: true
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^<rmg/'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 3
+  - Regex: '.*'
+    Priority: 1
+
+SpaceBeforeParens: ControlStatements
+SpacesInAngles: false
+SpaceAfterTemplateKeyword: true
+
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignTrailingComments: true
+
+FixNamespaceComments: true
