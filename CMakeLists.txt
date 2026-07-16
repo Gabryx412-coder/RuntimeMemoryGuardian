@@ -14,7 +14,7 @@ set(RMG_VERSION "${RMG_VERSION_MAJOR}.${RMG_VERSION_MINOR}.${RMG_VERSION_PATCH}"
 project(RuntimeMemoryGuardian
     VERSION ${RMG_VERSION}
     DESCRIPTION "Defensive runtime memory integrity and hook detection library"
-    HOMEPAGE_URL "https://github.com/yourorg/RuntimeMemoryGuardian"
+    HOMEPAGE_URL "https://github.com/Gabryx412-coder/RuntimeMemoryGuardian"
     LANGUAGES CXX
 )
 
