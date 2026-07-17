@@ -12,8 +12,8 @@
 #include "win_process_handle.hpp"
 
 #include <memory>
-#include <windows.h>
 #include <psapi.h>
+#include <windows.h>
 
 namespace rmg::platform {
 

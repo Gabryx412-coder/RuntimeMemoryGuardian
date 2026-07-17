@@ -11,10 +11,14 @@ namespace rmg::process {
 
 std::string_view toString(MonitorEventType type) noexcept {
     switch (type) {
-        case MonitorEventType::IntegrityViolation: return "IntegrityViolation";
-        case MonitorEventType::HookDetected:       return "HookDetected";
-        case MonitorEventType::ModuleLoaded:       return "ModuleLoaded";
-        case MonitorEventType::ModuleUnloaded:     return "ModuleUnloaded";
+        case MonitorEventType::IntegrityViolation:
+            return "IntegrityViolation";
+        case MonitorEventType::HookDetected:
+            return "HookDetected";
+        case MonitorEventType::ModuleLoaded:
+            return "ModuleLoaded";
+        case MonitorEventType::ModuleUnloaded:
+            return "ModuleUnloaded";
     }
     return "Unknown";
 }

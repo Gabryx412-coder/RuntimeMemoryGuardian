@@ -129,8 +129,8 @@ private:
     void runModuleMonitoringCycle();
 
     const rmg::platform::ProcessHandle* handle_;
-    const rmg::platform::IPlatformTraits* platformTraits_;
-    const rmg::integrity::IHashProvider* hashProvider_;
+    [[maybe_unused]] const rmg::platform::IPlatformTraits* platformTraits_;
+    [[maybe_unused]] const rmg::integrity::IHashProvider* hashProvider_;
     MonitorConfig config_;
 
     rmg::memory::MemoryScanner scanner_;

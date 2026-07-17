@@ -11,9 +11,9 @@
 // Example line:
 //   7f2a1c000000-7f2a1c021000 r-xp 00000000 08:01 131074  /usr/lib/x86_64-linux-gnu/libc.so.6
 // ==============================================================================
-
 #include "linux_process_handle.hpp"
 
+#include <charconv>
 #include <fstream>
 #include <sstream>
 
