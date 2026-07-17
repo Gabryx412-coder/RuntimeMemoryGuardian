@@ -6,6 +6,7 @@
 #include <rmg/core/logger.hpp>
 #include <rmg/integrity/integrity_baseline.hpp>
 
+#include <array>
 #include <cstring>
 
 namespace rmg::integrity {

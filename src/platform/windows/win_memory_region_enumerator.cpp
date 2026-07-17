@@ -9,10 +9,8 @@
 
 #include "win_process_handle.hpp"
 
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <psapi.h>
 #include <windows.h>
+#include <psapi.h>
 
 namespace rmg::platform::detail {
 
