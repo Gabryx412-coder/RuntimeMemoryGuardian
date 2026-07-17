@@ -4,6 +4,7 @@
 // ==============================================================================
 
 #include <rmg/core/error.hpp>
+#include <rmg/core/types.hpp>
 
 namespace rmg::core {
 
@@ -30,6 +31,25 @@ std::string Error::toDiagnosticString() const {
         result += context_;
     }
     return result;
+}
+
+std::string toString(MemoryProtection protection) {
+    std::string result;
+
+    if (hasFlag(protection, MemoryProtection::Read)) {
+        result += 'R';
+    }
+    if (hasFlag(protection, MemoryProtection::Write)) {
+        result += 'W';
+    }
+    if (hasFlag(protection, MemoryProtection::Execute)) {
+        result += 'X';
+    }
+    if (hasFlag(protection, MemoryProtection::Guard)) {
+        result += 'G';
+    }
+
+    return result.empty() ? "---" : result;
 }
 
 } // namespace rmg::core

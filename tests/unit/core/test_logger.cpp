@@ -5,6 +5,7 @@
 
 #include <gtest/gtest.h>
 
+#include <rmg/core/event.hpp>
 #include <rmg/core/logger.hpp>
 
 namespace {

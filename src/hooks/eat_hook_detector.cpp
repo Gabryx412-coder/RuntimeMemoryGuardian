@@ -26,7 +26,7 @@ namespace {
 ///       distinguish a documented forwarder string from an unexpected
 ///       redirect; this is tracked by the TODO below alongside the export
 ///       table walk itself.
-[[nodiscard]] bool resolvesWithinOwnModule(rmg::core::Address address,
+[[nodiscard]] [[maybe_unused]] bool resolvesWithinOwnModule(rmg::core::Address address,
                                           const rmg::modules::ModuleInfo& module) {
     return module.contains(address);
 }

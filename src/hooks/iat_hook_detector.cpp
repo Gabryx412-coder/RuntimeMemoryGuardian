@@ -25,7 +25,7 @@ namespace {
 
 /// @brief Returns true if @p address falls within the image bounds of any
 ///        module in @p loadedModules.
-[[nodiscard]] bool resolvesIntoKnownModule(rmg::core::Address address,
+[[nodiscard]] [[maybe_unused]] bool resolvesIntoKnownModule(rmg::core::Address address,
                                            std::span<const rmg::modules::ModuleInfo> loadedModules) {
     for (const rmg::modules::ModuleInfo& module : loadedModules) {
         if (module.contains(address)) {

@@ -104,7 +104,7 @@ endif()
 
 add_library(RMG::rmg ALIAS rmg)
 
-target_compile_features(rmg PUBLIC cxx_std_20)
+target_compile_features(rmg PUBLIC cxx_std_23)
 
 target_include_directories(rmg
     PUBLIC

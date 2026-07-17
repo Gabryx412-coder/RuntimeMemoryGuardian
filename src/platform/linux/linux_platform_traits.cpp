@@ -10,6 +10,7 @@
 
 #include "linux_process_handle.hpp"
 
+#include <memory>
 #include <unistd.h>
 
 namespace rmg::platform {

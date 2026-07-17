@@ -13,6 +13,7 @@
 #include "linux_process_handle.hpp"
 
 #include <algorithm>
+#include <limits>
 #include <unordered_map>
 
 namespace rmg::platform::detail {
