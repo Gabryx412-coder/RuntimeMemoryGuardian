@@ -9,9 +9,11 @@
 #include "win_process_handle.hpp"
 
 #include <array>
-#include <psapi.h>
-#include <windows.h>
 
+// clang-format off
+#include <windows.h>
+#include <psapi.h>
+// clang-format on
 namespace rmg::platform::detail {
 
 namespace {
