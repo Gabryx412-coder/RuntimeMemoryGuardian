@@ -11,12 +11,12 @@
 
 #pragma once
 
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/modules/module_info.hpp>
 #include <rmg/platform/platform_traits.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <vector>
 
 namespace rmg::modules {
 

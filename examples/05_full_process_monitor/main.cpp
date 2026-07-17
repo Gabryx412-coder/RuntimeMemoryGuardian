@@ -13,12 +13,12 @@
 // application deems appropriate (logging, alerting, terminating, etc.).
 // ==============================================================================
 
+#include <rmg/rmg.hpp>
+
 #include <atomic>
 #include <chrono>
 #include <cstdio>
 #include <thread>
-
-#include <rmg/rmg.hpp>
 
 namespace {
 

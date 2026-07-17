@@ -37,7 +37,7 @@ using NativeHandle = int;
 inline constexpr NativeHandle INVALID_NATIVE_HANDLE = -1;
 
 #else
-#error "Runtime Memory Guardian: unsupported platform (native_types.hpp)"
+    #error "Runtime Memory Guardian: unsupported platform (native_types.hpp)"
 #endif
 
 /// @brief Native operating-system process identifier.

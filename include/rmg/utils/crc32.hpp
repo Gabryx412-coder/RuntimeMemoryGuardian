@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include <cstdint>
-
 #include <rmg/core/types.hpp>
+
+#include <cstdint>
 
 namespace rmg::utils {
 

@@ -14,9 +14,8 @@
 // point rather than silently stubbed.
 // ==============================================================================
 
-#include <rmg/hooks/iat_hook_detector.hpp>
-
 #include <rmg/core/logger.hpp>
+#include <rmg/hooks/iat_hook_detector.hpp>
 #include <rmg/utils/string_utils.hpp>
 
 namespace rmg::hooks {
@@ -25,8 +24,9 @@ namespace {
 
 /// @brief Returns true if @p address falls within the image bounds of any
 ///        module in @p loadedModules.
-[[nodiscard]] [[maybe_unused]] bool resolvesIntoKnownModule(rmg::core::Address address,
-                                           std::span<const rmg::modules::ModuleInfo> loadedModules) {
+[[nodiscard]] [[maybe_unused]] bool
+resolvesIntoKnownModule(rmg::core::Address address,
+                        std::span<const rmg::modules::ModuleInfo> loadedModules) {
     for (const rmg::modules::ModuleInfo& module : loadedModules) {
         if (module.contains(address)) {
             return true;
@@ -39,8 +39,8 @@ namespace {
 
 rmg::core::Result<std::vector<HookFinding>>
 IatHookDetector::scan(const rmg::platform::ProcessHandle& handle,
-                       const rmg::modules::ModuleInfo& targetModule,
-                       std::span<const rmg::modules::ModuleInfo> loadedModules) const {
+                      const rmg::modules::ModuleInfo& targetModule,
+                      std::span<const rmg::modules::ModuleInfo> loadedModules) const {
     std::vector<HookFinding> findings;
 
     // TODO(#iat-image-parser): Locate the target module's import directory
@@ -64,7 +64,8 @@ IatHookDetector::scan(const rmg::platform::ProcessHandle& handle,
     // The validation predicate (resolvesIntoKnownModule) above is already
     // implemented and unit-testable independently of the image parser.
 
-    RMG_LOG_DEBUG("IatHookDetector::scan: image-format import-table parsing not yet implemented for module '" +
+    RMG_LOG_DEBUG("IatHookDetector::scan: image-format import-table parsing not yet implemented "
+                  "for module '" +
                   targetModule.name + "'; returning no findings.");
 
     (void)handle;

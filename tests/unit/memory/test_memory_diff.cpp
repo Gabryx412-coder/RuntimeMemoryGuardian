@@ -3,9 +3,9 @@
 // File: tests/unit/memory/test_memory_diff.cpp
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/memory/memory_diff.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -26,8 +26,8 @@ public:
 
     [[nodiscard]] rmg::core::Result<std::vector<MemoryRegion>>
     enumerateRegions(const rmg::platform::ProcessHandle&) const override {
-        return std::vector<MemoryRegion>{
-            MemoryRegion{baseAddress, bytes.size(), rmg::core::MemoryProtection::Read, "", "", true}};
+        return std::vector<MemoryRegion>{MemoryRegion{
+            baseAddress, bytes.size(), rmg::core::MemoryProtection::Read, "", "", true}};
     }
 
     [[nodiscard]] rmg::core::Result<std::vector<rmg::platform::NativeModuleInfo>>
@@ -39,7 +39,8 @@ public:
     readMemory(const rmg::platform::ProcessHandle&, rmg::core::Address address,
                rmg::core::MutableByteView destination) const override {
         if (address != baseAddress) {
-            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound, "unexpected address");
+            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound,
+                                                "unexpected address");
         }
         const std::size_t toCopy = std::min(bytes.size(), destination.size());
         std::copy_n(bytes.begin(), toCopy, destination.begin());
@@ -54,8 +55,8 @@ public:
     [[nodiscard]] std::size_t pageSize() const noexcept override { return 4096; }
 };
 
-[[nodiscard]] rmg::memory::MemorySnapshot
-captureSnapshot(DiffTestPlatform& platform, const std::vector<std::byte>& contents) {
+[[nodiscard]] rmg::memory::MemorySnapshot captureSnapshot(DiffTestPlatform& platform,
+                                                          const std::vector<std::byte>& contents) {
     platform.bytes = contents;
     auto handle = rmg::platform::ProcessHandle::openSelf();
     auto regions = platform.enumerateRegions(*handle);
@@ -65,7 +66,8 @@ captureSnapshot(DiffTestPlatform& platform, const std::vector<std::byte>& conten
 
 TEST(MemoryDiffTest, IdenticalSnapshotsProduceNoChanges) {
     DiffTestPlatform platform;
-    const std::vector<std::byte> contents = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4}};
+    const std::vector<std::byte> contents = {std::byte{1}, std::byte{2}, std::byte{3},
+                                             std::byte{4}};
 
     auto baseline = captureSnapshot(platform, contents);
     auto current = captureSnapshot(platform, contents);
@@ -78,8 +80,10 @@ TEST(MemoryDiffTest, IdenticalSnapshotsProduceNoChanges) {
 
 TEST(MemoryDiffTest, SingleByteChangeIsDetectedWithCorrectAddress) {
     DiffTestPlatform platform;
-    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4}};
-    const std::vector<std::byte> modified = {std::byte{1}, std::byte{0xFF}, std::byte{3}, std::byte{4}};
+    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3},
+                                             std::byte{4}};
+    const std::vector<std::byte> modified = {std::byte{1}, std::byte{0xFF}, std::byte{3},
+                                             std::byte{4}};
 
     auto baseline = captureSnapshot(platform, original);
     auto current = captureSnapshot(platform, modified);
@@ -93,8 +97,10 @@ TEST(MemoryDiffTest, SingleByteChangeIsDetectedWithCorrectAddress) {
 
 TEST(MemoryDiffTest, ContiguousChangedBytesAreMergedIntoOneRange) {
     DiffTestPlatform platform;
-    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4}, std::byte{5}};
-    const std::vector<std::byte> modified = {std::byte{1}, std::byte{0xA}, std::byte{0xB}, std::byte{0xC}, std::byte{5}};
+    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4},
+                                             std::byte{5}};
+    const std::vector<std::byte> modified = {std::byte{1}, std::byte{0xA}, std::byte{0xB},
+                                             std::byte{0xC}, std::byte{5}};
 
     auto baseline = captureSnapshot(platform, original);
     auto current = captureSnapshot(platform, modified);
@@ -107,8 +113,10 @@ TEST(MemoryDiffTest, ContiguousChangedBytesAreMergedIntoOneRange) {
 
 TEST(MemoryDiffTest, NonContiguousChangesProduceMultipleRanges) {
     DiffTestPlatform platform;
-    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4}, std::byte{5}};
-    const std::vector<std::byte> modified = {std::byte{0xA}, std::byte{2}, std::byte{3}, std::byte{4}, std::byte{0xB}};
+    const std::vector<std::byte> original = {std::byte{1}, std::byte{2}, std::byte{3}, std::byte{4},
+                                             std::byte{5}};
+    const std::vector<std::byte> modified = {std::byte{0xA}, std::byte{2}, std::byte{3},
+                                             std::byte{4}, std::byte{0xB}};
 
     auto baseline = captureSnapshot(platform, original);
     auto current = captureSnapshot(platform, modified);

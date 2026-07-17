@@ -3,16 +3,16 @@
 // File: tests/unit/core/test_logger.cpp
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/core/event.hpp>
 #include <rmg/core/logger.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
 using rmg::core::ILogSink;
-using rmg::core::LogLevel;
 using rmg::core::Logger;
+using rmg::core::LogLevel;
 
 /// @brief Test double capturing every log record it receives, so
 ///        assertions can verify Logger's filtering and dispatch behavior
@@ -36,9 +36,7 @@ public:
 ///        is a process-wide singleton).
 class LoggerTestFixture : public ::testing::Test {
 protected:
-    void SetUp() override {
-        previousLevel_ = Logger::instance().minLevel();
-    }
+    void SetUp() override { previousLevel_ = Logger::instance().minLevel(); }
 
     void TearDown() override {
         Logger::instance().setMinLevel(previousLevel_);

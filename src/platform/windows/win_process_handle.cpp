@@ -27,13 +27,13 @@ rmg::core::Result<ProcessHandle> ProcessHandle::open(NativeProcessId processId) 
     if (rawHandle == nullptr) {
         const DWORD lastError = ::GetLastError();
         if (lastError == ERROR_INVALID_PARAMETER) {
-            return rmg::core::fail<ProcessHandle>(
-                rmg::core::ErrorCode::NotFound,
-                "OpenProcess: no such process id " + std::to_string(processId));
+            return rmg::core::fail<ProcessHandle>(rmg::core::ErrorCode::NotFound,
+                                                  "OpenProcess: no such process id " +
+                                                      std::to_string(processId));
         }
-        return rmg::core::fail<ProcessHandle>(
-            rmg::core::ErrorCode::AccessDenied,
-            "OpenProcess failed: " + detail::lastErrorToString(lastError));
+        return rmg::core::fail<ProcessHandle>(rmg::core::ErrorCode::AccessDenied,
+                                              "OpenProcess failed: " +
+                                                  detail::lastErrorToString(lastError));
     }
 
     return ProcessHandle(detail::fromWinHandle(rawHandle), processId);
@@ -48,19 +48,17 @@ rmg::core::Result<ProcessHandle> ProcessHandle::openSelf() {
     HANDLE pseudoHandle = ::GetCurrentProcess();
     HANDLE realHandle = nullptr;
 
-    const BOOL duplicated = ::DuplicateHandle(
-        pseudoHandle, pseudoHandle,
-        pseudoHandle, &realHandle,
-        0, FALSE, DUPLICATE_SAME_ACCESS);
+    const BOOL duplicated = ::DuplicateHandle(pseudoHandle, pseudoHandle, pseudoHandle, &realHandle,
+                                              0, FALSE, DUPLICATE_SAME_ACCESS);
 
     if (duplicated == 0 || realHandle == nullptr) {
-        return rmg::core::fail<ProcessHandle>(
-            rmg::core::ErrorCode::PlatformError,
-            "DuplicateHandle(self) failed: " + detail::lastErrorToString(::GetLastError()));
+        return rmg::core::fail<ProcessHandle>(rmg::core::ErrorCode::PlatformError,
+                                              "DuplicateHandle(self) failed: " +
+                                                  detail::lastErrorToString(::GetLastError()));
     }
 
     return ProcessHandle(detail::fromWinHandle(realHandle),
-                          static_cast<NativeProcessId>(::GetCurrentProcessId()));
+                         static_cast<NativeProcessId>(::GetCurrentProcessId()));
 }
 
 ProcessHandle::ProcessHandle(ProcessHandle&& other) noexcept
@@ -150,12 +148,8 @@ std::string lastErrorToString(std::uint32_t errorCode) {
 
     const DWORD length = ::FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr,
-        errorCode,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPSTR>(&messageBuffer),
-        0,
-        nullptr);
+        nullptr, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        reinterpret_cast<LPSTR>(&messageBuffer), 0, nullptr);
 
     std::string message;
     if (length > 0 && messageBuffer != nullptr) {
@@ -175,24 +169,20 @@ std::string lastErrorToString(std::uint32_t errorCode) {
     return "[" + std::to_string(errorCode) + "] " + message;
 }
 
-rmg::core::Result<std::size_t>
-readMemoryWindows(const ProcessHandle& handle,
-                   rmg::core::Address address,
-                   rmg::core::MutableByteView destination) {
+rmg::core::Result<std::size_t> readMemoryWindows(const ProcessHandle& handle,
+                                                 rmg::core::Address address,
+                                                 rmg::core::MutableByteView destination) {
     SIZE_T bytesRead = 0;
 
-    const BOOL succeeded = ::ReadProcessMemory(
-        toWinHandle(handle.nativeHandle()),
-        reinterpret_cast<LPCVOID>(address),
-        destination.data(),
-        destination.size(),
-        &bytesRead);
+    const BOOL succeeded =
+        ::ReadProcessMemory(toWinHandle(handle.nativeHandle()), reinterpret_cast<LPCVOID>(address),
+                            destination.data(), destination.size(), &bytesRead);
 
     if (succeeded == 0 && bytesRead == 0) {
-        return rmg::core::fail<std::size_t>(
-            rmg::core::ErrorCode::MemoryAccessFailure,
-            "ReadProcessMemory failed at " + std::to_string(address) + ": " +
-                lastErrorToString(::GetLastError()));
+        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::MemoryAccessFailure,
+                                            "ReadProcessMemory failed at " +
+                                                std::to_string(address) + ": " +
+                                                lastErrorToString(::GetLastError()));
     }
 
     // A partial read (succeeded == FALSE but bytesRead > 0, or succeeded ==
@@ -201,27 +191,25 @@ readMemoryWindows(const ProcessHandle& handle,
     return static_cast<std::size_t>(bytesRead);
 }
 
-rmg::core::Result<rmg::core::MemoryProtection>
-queryProtectionWindows(const ProcessHandle& handle, rmg::core::Address address) {
+rmg::core::Result<rmg::core::MemoryProtection> queryProtectionWindows(const ProcessHandle& handle,
+                                                                      rmg::core::Address address) {
     MEMORY_BASIC_INFORMATION info{};
 
-    const SIZE_T written = ::VirtualQueryEx(
-        toWinHandle(handle.nativeHandle()),
-        reinterpret_cast<LPCVOID>(address),
-        &info,
-        sizeof(info));
+    const SIZE_T written =
+        ::VirtualQueryEx(toWinHandle(handle.nativeHandle()), reinterpret_cast<LPCVOID>(address),
+                         &info, sizeof(info));
 
     if (written == 0) {
         return rmg::core::fail<rmg::core::MemoryProtection>(
-            rmg::core::ErrorCode::RegionNotFound,
-            "VirtualQueryEx failed at " + std::to_string(address) + ": " +
-                lastErrorToString(::GetLastError()));
+            rmg::core::ErrorCode::RegionNotFound, "VirtualQueryEx failed at " +
+                                                      std::to_string(address) + ": " +
+                                                      lastErrorToString(::GetLastError()));
     }
 
     if (info.State != MEM_COMMIT) {
-        return rmg::core::fail<rmg::core::MemoryProtection>(
-            rmg::core::ErrorCode::RegionNotFound,
-            "address " + std::to_string(address) + " is not committed memory");
+        return rmg::core::fail<rmg::core::MemoryProtection>(rmg::core::ErrorCode::RegionNotFound,
+                                                            "address " + std::to_string(address) +
+                                                                " is not committed memory");
     }
 
     return toRmgProtection(static_cast<std::uint32_t>(info.Protect));

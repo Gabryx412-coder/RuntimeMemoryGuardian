@@ -14,8 +14,7 @@ namespace {
 /// @brief Compares the contents of two SnapshotRegion instances that are
 ///        assumed to cover the same base address, appending any changed
 ///        byte ranges to @p outChanges.
-void compareRegionContents(const SnapshotRegion& baseline,
-                           const SnapshotRegion& current,
+void compareRegionContents(const SnapshotRegion& baseline, const SnapshotRegion& current,
                            std::vector<ByteRangeChange>& outChanges) {
     const rmg::core::ByteView baselineBytes = baseline.contents.view();
     const rmg::core::ByteView currentBytes = current.contents.view();
@@ -70,8 +69,9 @@ DiffResult MemoryDiff::compare(const MemorySnapshot& baseline, const MemorySnaps
         }
     }
 
-    std::sort(result.changedRanges.begin(), result.changedRanges.end(),
-              [](const ByteRangeChange& a, const ByteRangeChange& b) { return a.address < b.address; });
+    std::sort(
+        result.changedRanges.begin(), result.changedRanges.end(),
+        [](const ByteRangeChange& a, const ByteRangeChange& b) { return a.address < b.address; });
 
     return result;
 }

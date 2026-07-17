@@ -13,9 +13,9 @@
 //   3. Immediately verify against that baseline (expected: clean).
 // ==============================================================================
 
-#include <cstdio>
-
 #include <rmg/rmg.hpp>
+
+#include <cstdio>
 
 namespace {
 
@@ -24,18 +24,17 @@ void printReport(const rmg::integrity::IntegrityReport& report) {
         std::printf("[OK] Integrity check passed: no tampering detected.\n");
     } else {
         std::printf("[ALERT] Integrity violation detected in %zu section(s):\n",
-                     report.tamperedSections.size());
+                    report.tamperedSections.size());
         for (const auto& tampered : report.tamperedSections) {
             std::printf("  - module '%s', section '%s' at 0x%zx\n",
-                        tampered.section.ownerModule.c_str(),
-                        tampered.section.name.c_str(),
+                        tampered.section.ownerModule.c_str(), tampered.section.name.c_str(),
                         static_cast<std::size_t>(tampered.section.baseAddress));
         }
     }
 
     if (!report.unreadableSections.empty()) {
         std::printf("[WARN] %zu section(s) could not be read during verification.\n",
-                     report.unreadableSections.size());
+                    report.unreadableSections.size());
     }
 }
 

@@ -11,20 +11,25 @@ namespace rmg::core {
 
 std::string_view toString(LogLevel level) noexcept {
     switch (level) {
-        case LogLevel::Trace:    return "TRACE";
-        case LogLevel::Debug:    return "DEBUG";
-        case LogLevel::Info:     return "INFO";
-        case LogLevel::Warning:  return "WARN";
-        case LogLevel::Error:    return "ERROR";
-        case LogLevel::Critical: return "CRITICAL";
+        case LogLevel::Trace:
+            return "TRACE";
+        case LogLevel::Debug:
+            return "DEBUG";
+        case LogLevel::Info:
+            return "INFO";
+        case LogLevel::Warning:
+            return "WARN";
+        case LogLevel::Error:
+            return "ERROR";
+        case LogLevel::Critical:
+            return "CRITICAL";
     }
     return "UNKNOWN";
 }
 
 void ConsoleLogSink::write(LogLevel level, std::string_view message) {
     std::FILE* stream = (level >= LogLevel::Error) ? stderr : stdout;
-    std::fprintf(stream, "[RMG][%s] %.*s\n",
-                 std::string(toString(level)).c_str(),
+    std::fprintf(stream, "[RMG][%s] %.*s\n", std::string(toString(level)).c_str(),
                  static_cast<int>(message.size()), message.data());
 }
 

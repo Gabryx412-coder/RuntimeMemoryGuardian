@@ -10,10 +10,9 @@
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
+#include <array>
 #include <psapi.h>
 #include <windows.h>
-
-#include <array>
 
 namespace rmg::platform::detail {
 
@@ -48,12 +47,9 @@ enumerateModulesWindows(const ProcessHandle& handle) {
     std::vector<HMODULE> moduleHandles(bytesNeeded / sizeof(HMODULE));
     DWORD bytesReturned = 0;
 
-    if (::EnumProcessModulesEx(
-            winHandle,
-            moduleHandles.data(),
-            static_cast<DWORD>(moduleHandles.size() * sizeof(HMODULE)),
-            &bytesReturned,
-            LIST_MODULES_ALL) == 0) {
+    if (::EnumProcessModulesEx(winHandle, moduleHandles.data(),
+                               static_cast<DWORD>(moduleHandles.size() * sizeof(HMODULE)),
+                               &bytesReturned, LIST_MODULES_ALL) == 0) {
         return rmg::core::fail<std::vector<NativeModuleInfo>>(
             rmg::core::ErrorCode::PlatformError,
             "EnumProcessModulesEx failed: " + lastErrorToString(::GetLastError()));
@@ -74,8 +70,8 @@ enumerateModulesWindows(const ProcessHandle& handle) {
         }
 
         std::array<char, MAX_PATH> pathBuffer{};
-        const DWORD pathLength = ::GetModuleFileNameExA(
-            winHandle, moduleHandle, pathBuffer.data(), static_cast<DWORD>(pathBuffer.size()));
+        const DWORD pathLength = ::GetModuleFileNameExA(winHandle, moduleHandle, pathBuffer.data(),
+                                                        static_cast<DWORD>(pathBuffer.size()));
 
         NativeModuleInfo info;
         info.baseAddress = reinterpret_cast<rmg::core::Address>(moduleInfo.lpBaseOfDll);

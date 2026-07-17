@@ -11,16 +11,16 @@
 
 #pragma once
 
-#include <chrono>
-#include <cstdint>
-#include <string>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/integrity/code_section_info.hpp>
 #include <rmg/integrity/hash_provider.hpp>
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <chrono>
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace rmg::integrity {
 
@@ -45,10 +45,8 @@ public:
     ///         entries().size() against sections.size() to detect this.
     ///         Fails outright only if every section fails to read.
     [[nodiscard]] static rmg::core::Result<IntegrityBaseline>
-    create(std::span<const CodeSectionInfo> sections,
-           const rmg::platform::ProcessHandle& handle,
-           const rmg::memory::MemoryScanner& scanner,
-           const IHashProvider& hashProvider);
+    create(std::span<const CodeSectionInfo> sections, const rmg::platform::ProcessHandle& handle,
+           const rmg::memory::MemoryScanner& scanner, const IHashProvider& hashProvider);
 
     IntegrityBaseline(const IntegrityBaseline&) = default;
     IntegrityBaseline& operator=(const IntegrityBaseline&) = default;
@@ -57,7 +55,9 @@ public:
 
     [[nodiscard]] const std::vector<BaselineEntry>& entries() const noexcept { return entries_; }
 
-    [[nodiscard]] std::chrono::system_clock::time_point capturedAt() const noexcept { return capturedAt_; }
+    [[nodiscard]] std::chrono::system_clock::time_point capturedAt() const noexcept {
+        return capturedAt_;
+    }
 
     [[nodiscard]] std::string_view hashAlgorithmName() const noexcept { return hashAlgorithmName_; }
 

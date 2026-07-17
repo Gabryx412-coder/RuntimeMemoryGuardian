@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/integrity/code_section_info.hpp>
 #include <rmg/integrity/hash_provider.hpp>
 #include <rmg/integrity/integrity_baseline.hpp>
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <vector>
 
 namespace rmg::integrity {
 
@@ -56,7 +56,8 @@ public:
     ///                      verify (i.e. the same algorithm used at
     ///                      baseline-creation time). Must outlive this
     ///                      object.
-    IntegrityChecker(const rmg::memory::MemoryScanner& scanner, const IHashProvider& hashProvider) noexcept
+    IntegrityChecker(const rmg::memory::MemoryScanner& scanner,
+                     const IHashProvider& hashProvider) noexcept
         : scanner_(&scanner), hashProvider_(&hashProvider) {}
 
     /// @brief Verifies @p baseline against the current memory state of the

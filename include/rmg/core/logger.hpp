@@ -95,9 +95,11 @@ private:
 
 /// @brief Convenience macros to keep call sites concise while still allowing
 ///        the logging calls to be compiled out entirely if ever needed.
-#define RMG_LOG_TRACE(msg)    ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Trace, msg)
-#define RMG_LOG_DEBUG(msg)    ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Debug, msg)
-#define RMG_LOG_INFO(msg)     ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Info, msg)
-#define RMG_LOG_WARNING(msg)  ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Warning, msg)
-#define RMG_LOG_ERROR(msg)    ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Error, msg)
-#define RMG_LOG_CRITICAL(msg) ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Critical, msg)
+#define RMG_LOG_TRACE(msg) ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Trace, msg)
+#define RMG_LOG_DEBUG(msg) ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Debug, msg)
+#define RMG_LOG_INFO(msg) ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Info, msg)
+#define RMG_LOG_WARNING(msg)                                                                       \
+    ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Warning, msg)
+#define RMG_LOG_ERROR(msg) ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Error, msg)
+#define RMG_LOG_CRITICAL(msg)                                                                      \
+    ::rmg::core::Logger::instance().log(::rmg::core::LogLevel::Critical, msg)

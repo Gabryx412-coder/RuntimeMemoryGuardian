@@ -33,8 +33,7 @@ public:
     }
 
     [[nodiscard]] rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle& handle,
-               rmg::core::Address address,
+    readMemory(const ProcessHandle& handle, rmg::core::Address address,
                rmg::core::MutableByteView destination) const override {
         return detail::readMemoryWindows(handle, address, destination);
     }

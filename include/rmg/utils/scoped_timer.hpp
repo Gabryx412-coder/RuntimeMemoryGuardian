@@ -30,11 +30,11 @@ namespace rmg::utils {
 /// @endcode
 class ScopedTimer {
 public:
-    using ReportCallback = std::function<void(std::string_view label, std::chrono::nanoseconds elapsed)>;
+    using ReportCallback =
+        std::function<void(std::string_view label, std::chrono::nanoseconds elapsed)>;
 
     explicit ScopedTimer(std::string label, ReportCallback callback)
-        : label_(std::move(label)),
-          callback_(std::move(callback)),
+        : label_(std::move(label)), callback_(std::move(callback)),
           start_(std::chrono::steady_clock::now()) {}
 
     ~ScopedTimer() {

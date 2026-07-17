@@ -11,10 +11,10 @@
 
 #pragma once
 
+#include <rmg/core/types.hpp>
+
 #include <cstddef>
 #include <vector>
-
-#include <rmg/core/types.hpp>
 
 namespace rmg::utils {
 
@@ -58,7 +58,9 @@ public:
     void clear() noexcept { data_.clear(); }
 
     [[nodiscard]] std::byte& operator[](std::size_t index) noexcept { return data_[index]; }
-    [[nodiscard]] const std::byte& operator[](std::size_t index) const noexcept { return data_[index]; }
+    [[nodiscard]] const std::byte& operator[](std::size_t index) const noexcept {
+        return data_[index];
+    }
 
     [[nodiscard]] bool operator==(const ByteBuffer& other) const = default;
 

@@ -4,7 +4,6 @@
 // ==============================================================================
 
 #include <rmg/integrity/hash_provider.hpp>
-
 #include <rmg/utils/crc32.hpp>
 #include <rmg/utils/sha256.hpp>
 

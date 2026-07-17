@@ -11,11 +11,11 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <rmg/core/types.hpp>
 #include <rmg/integrity/code_section_info.hpp>
+
+#include <string>
+#include <vector>
 
 namespace rmg::modules {
 

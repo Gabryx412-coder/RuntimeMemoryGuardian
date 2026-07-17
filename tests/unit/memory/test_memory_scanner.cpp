@@ -7,10 +7,10 @@
 // on real OS memory layout.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/memory/memory_region_enumerator.hpp>
 #include <rmg/memory/memory_scanner.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -51,7 +51,8 @@ public:
     }
 
     [[nodiscard]] rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle&, rmg::core::Address address, MutableByteView destination) const override {
+    readMemory(const ProcessHandle&, rmg::core::Address address,
+               MutableByteView destination) const override {
         for (const FakeRegion& fake : regions) {
             if (!fake.region.contains(address)) {
                 continue;
@@ -59,10 +60,12 @@ public:
             const std::size_t offset = static_cast<std::size_t>(address - fake.region.baseAddress);
             const std::size_t available = fake.contents.size() - offset;
             const std::size_t toCopy = std::min(available, destination.size());
-            std::copy_n(fake.contents.begin() + static_cast<std::ptrdiff_t>(offset), toCopy, destination.begin());
+            std::copy_n(fake.contents.begin() + static_cast<std::ptrdiff_t>(offset), toCopy,
+                        destination.begin());
             return toCopy;
         }
-        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound, "address not mapped");
+        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound,
+                                            "address not mapped");
     }
 
     [[nodiscard]] rmg::core::Result<MemoryProtection>
@@ -72,7 +75,8 @@ public:
                 return fake.region.protection;
             }
         }
-        return rmg::core::fail<MemoryProtection>(rmg::core::ErrorCode::RegionNotFound, "address not mapped");
+        return rmg::core::fail<MemoryProtection>(rmg::core::ErrorCode::RegionNotFound,
+                                                 "address not mapped");
     }
 
     [[nodiscard]] std::size_t pageSize() const noexcept override { return 4096; }
@@ -104,7 +108,9 @@ TEST(MemoryRegionEnumeratorTest, EnumerateExecutableFiltersNonExecutableRegions)
     MockPlatformTraits mock;
     mock.regions.push_back({MemoryRegion{0x1000, 0x100, MemoryProtection::Read, "", "", true}, {}});
     mock.regions.push_back(
-        {MemoryRegion{0x2000, 0x100, MemoryProtection::Read | MemoryProtection::Execute, "", "", true}, {}});
+        {MemoryRegion{0x2000, 0x100, MemoryProtection::Read | MemoryProtection::Execute, "", "",
+                      true},
+         {}});
 
     rmg::memory::MemoryRegionEnumerator enumerator(mock);
     auto handle = makeDummyHandle();
@@ -117,7 +123,8 @@ TEST(MemoryRegionEnumeratorTest, EnumerateExecutableFiltersNonExecutableRegions)
 
 TEST(MemoryScannerTest, ReadReturnsExactBytesWhenFullyMapped) {
     MockPlatformTraits mock;
-    std::vector<std::byte> data = {std::byte{0xDE}, std::byte{0xAD}, std::byte{0xBE}, std::byte{0xEF}};
+    std::vector<std::byte> data = {std::byte{0xDE}, std::byte{0xAD}, std::byte{0xBE},
+                                   std::byte{0xEF}};
     mock.regions.push_back(
         {MemoryRegion{0x1000, data.size(), MemoryProtection::Read, "", "", true}, data});
 
@@ -147,9 +154,11 @@ TEST(MemoryScannerTest, ScanWithExecutableOnlyFilterCapturesOnlyExecutableRegion
     std::vector<std::byte> dataBytes = {std::byte{0x00}, std::byte{0x00}};
 
     mock.regions.push_back(
-        {MemoryRegion{0x1000, 2, MemoryProtection::Read | MemoryProtection::Execute, "", "", true}, executableBytes});
+        {MemoryRegion{0x1000, 2, MemoryProtection::Read | MemoryProtection::Execute, "", "", true},
+         executableBytes});
     mock.regions.push_back(
-        {MemoryRegion{0x2000, 2, MemoryProtection::Read | MemoryProtection::Write, "", "", true}, dataBytes});
+        {MemoryRegion{0x2000, 2, MemoryProtection::Read | MemoryProtection::Write, "", "", true},
+         dataBytes});
 
     rmg::memory::MemoryScanner scanner(mock);
     auto handle = makeDummyHandle();

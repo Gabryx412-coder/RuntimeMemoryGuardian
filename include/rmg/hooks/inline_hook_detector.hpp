@@ -21,14 +21,14 @@
 
 #pragma once
 
-#include <span>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/hooks/hook_types.hpp>
 #include <rmg/integrity/code_section_info.hpp>
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <span>
+#include <vector>
 
 namespace rmg::hooks {
 
@@ -50,8 +50,7 @@ public:
     /// @param moduleSize Size of the owning module's image, in bytes.
     [[nodiscard]] rmg::core::Result<std::vector<HookFinding>>
     scan(const rmg::platform::ProcessHandle& handle,
-         std::span<const rmg::integrity::CodeSectionInfo> sections,
-         rmg::core::Address moduleBase,
+         std::span<const rmg::integrity::CodeSectionInfo> sections, rmg::core::Address moduleBase,
          std::size_t moduleSize) const;
 
 private:

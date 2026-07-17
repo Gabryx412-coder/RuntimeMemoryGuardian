@@ -4,7 +4,6 @@
 // ==============================================================================
 
 #include <rmg/modules/module_enumerator.hpp>
-
 #include <rmg/utils/string_utils.hpp>
 
 namespace rmg::modules {
@@ -26,7 +25,8 @@ deriveCodeSections(const rmg::platform::NativeModuleInfo& module,
     std::vector<rmg::integrity::CodeSectionInfo> sections;
     std::size_t ordinal = 0;
 
-    const rmg::core::Address moduleEnd = module.baseAddress + static_cast<rmg::core::Address>(module.size);
+    const rmg::core::Address moduleEnd =
+        module.baseAddress + static_cast<rmg::core::Address>(module.size);
 
     for (const rmg::platform::MemoryRegion& region : allRegions) {
         if (!region.isCommitted || !region.isExecutable()) {
@@ -81,7 +81,8 @@ ModuleEnumerator::enumerate(const rmg::platform::ProcessHandle& handle) const {
 }
 
 rmg::core::Result<ModuleInfo>
-ModuleEnumerator::findByName(const rmg::platform::ProcessHandle& handle, std::string_view moduleName) const {
+ModuleEnumerator::findByName(const rmg::platform::ProcessHandle& handle,
+                             std::string_view moduleName) const {
     auto allModules = enumerate(handle);
     if (!allModules) {
         return std::unexpected(allModules.error());
@@ -93,9 +94,8 @@ ModuleEnumerator::findByName(const rmg::platform::ProcessHandle& handle, std::st
         }
     }
 
-    return rmg::core::fail<ModuleInfo>(
-        rmg::core::ErrorCode::NotFound,
-        "no loaded module named '" + std::string(moduleName) + "'");
+    return rmg::core::fail<ModuleInfo>(rmg::core::ErrorCode::NotFound,
+                                       "no loaded module named '" + std::string(moduleName) + "'");
 }
 
 } // namespace rmg::modules

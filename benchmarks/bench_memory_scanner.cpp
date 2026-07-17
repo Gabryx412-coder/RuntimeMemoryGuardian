@@ -9,10 +9,10 @@
 // pollInterval.
 // ==============================================================================
 
-#include <benchmark/benchmark.h>
-
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/platform/platform_factory.hpp>
+
+#include <benchmark/benchmark.h>
 
 namespace {
 

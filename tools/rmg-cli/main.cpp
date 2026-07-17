@@ -21,14 +21,14 @@
 //   2  Anomalies found (integrity violation and/or hooks detected)
 // ==============================================================================
 
+#include <rmg/rmg.hpp>
+
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <optional>
 #include <string>
 #include <vector>
-
-#include <rmg/rmg.hpp>
 
 namespace {
 
@@ -44,17 +44,16 @@ struct CliOptions {
 };
 
 void printUsage() {
-    std::printf(
-        "rmg-cli - Runtime Memory Guardian command-line tool\n\n"
-        "Usage:\n"
-        "  rmg-cli --self                    Target the current process\n"
-        "  rmg-cli --pid <pid>               Target an external process by id\n"
-        "  rmg-cli --list-modules            List loaded modules\n"
-        "  rmg-cli --check-integrity         Establish and immediately verify a baseline\n"
-        "  rmg-cli --detect-hooks            Scan all loaded modules for suspected hooks\n"
-        "  rmg-cli --load-baseline <path>    Load a serialized baseline and verify it\n"
-        "  rmg-cli --version                 Print version information\n"
-        "  rmg-cli --help                    Show this help text\n");
+    std::printf("rmg-cli - Runtime Memory Guardian command-line tool\n\n"
+                "Usage:\n"
+                "  rmg-cli --self                    Target the current process\n"
+                "  rmg-cli --pid <pid>               Target an external process by id\n"
+                "  rmg-cli --list-modules            List loaded modules\n"
+                "  rmg-cli --check-integrity         Establish and immediately verify a baseline\n"
+                "  rmg-cli --detect-hooks            Scan all loaded modules for suspected hooks\n"
+                "  rmg-cli --load-baseline <path>    Load a serialized baseline and verify it\n"
+                "  rmg-cli --version                 Print version information\n"
+                "  rmg-cli --help                    Show this help text\n");
 }
 
 [[nodiscard]] std::optional<CliOptions> parseArgs(int argc, char** argv) {
@@ -70,7 +69,8 @@ void printUsage() {
                 std::fprintf(stderr, "Error: --pid requires a value\n");
                 return std::nullopt;
             }
-            options.pid = static_cast<rmg::platform::NativeProcessId>(std::strtoul(argv[++i], nullptr, 10));
+            options.pid =
+                static_cast<rmg::platform::NativeProcessId>(std::strtoul(argv[++i], nullptr, 10));
         } else if (arg == "--list-modules") {
             options.listModules = true;
         } else if (arg == "--check-integrity") {
@@ -99,8 +99,8 @@ void printUsage() {
 [[nodiscard]] rmg::core::Result<std::vector<std::byte>> readFileBytes(const std::string& path) {
     std::ifstream file(path, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
-        return rmg::core::fail<std::vector<std::byte>>(
-            rmg::core::ErrorCode::NotFound, "cannot open file: " + path);
+        return rmg::core::fail<std::vector<std::byte>>(rmg::core::ErrorCode::NotFound,
+                                                       "cannot open file: " + path);
     }
 
     const std::streamsize size = file.tellg();
@@ -108,8 +108,8 @@ void printUsage() {
 
     std::vector<std::byte> buffer(static_cast<std::size_t>(size));
     if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-        return rmg::core::fail<std::vector<std::byte>>(
-            rmg::core::ErrorCode::SerializationError, "failed to read file: " + path);
+        return rmg::core::fail<std::vector<std::byte>>(rmg::core::ErrorCode::SerializationError,
+                                                       "failed to read file: " + path);
     }
 
     return buffer;
@@ -119,10 +119,8 @@ void printModules(const std::vector<rmg::modules::ModuleInfo>& modules) {
     std::printf("Loaded modules (%zu):\n", modules.size());
     for (const auto& module : modules) {
         std::printf("  0x%016zx  size=%-10zu sections=%-3zu %s\n",
-                    static_cast<std::size_t>(module.baseAddress),
-                    module.size,
-                    module.sections.size(),
-                    module.name.c_str());
+                    static_cast<std::size_t>(module.baseAddress), module.size,
+                    module.sections.size(), module.name.c_str());
     }
 }
 
@@ -132,8 +130,7 @@ void printIntegrityReport(const rmg::integrity::IntegrityReport& report) {
     } else {
         std::printf("[ALERT] %zu tampered section(s) found:\n", report.tamperedSections.size());
         for (const auto& tampered : report.tamperedSections) {
-            std::printf("  - %s!%s at 0x%zx\n",
-                        tampered.section.ownerModule.c_str(),
+            std::printf("  - %s!%s at 0x%zx\n", tampered.section.ownerModule.c_str(),
                         tampered.section.name.c_str(),
                         static_cast<std::size_t>(tampered.section.baseAddress));
         }
@@ -141,7 +138,7 @@ void printIntegrityReport(const rmg::integrity::IntegrityReport& report) {
 
     if (!report.unreadableSections.empty()) {
         std::printf("[WARN] %zu section(s) were unreadable during verification.\n",
-                     report.unreadableSections.size());
+                    report.unreadableSections.size());
     }
 }
 
@@ -155,8 +152,7 @@ void printHookFindings(const std::vector<rmg::hooks::HookFinding>& findings) {
     for (const auto& finding : findings) {
         std::printf("  - [%s] %s (module: %s)\n",
                     std::string(rmg::hooks::toString(finding.type)).c_str(),
-                    finding.description.c_str(),
-                    finding.moduleName.c_str());
+                    finding.description.c_str(), finding.moduleName.c_str());
     }
 }
 
@@ -176,7 +172,8 @@ int main(int argc, char** argv) {
     }
 
     if (options.showVersion) {
-        std::printf("rmg-cli (Runtime Memory Guardian) v%s\n", std::string(rmg::VERSION_STRING).c_str());
+        std::printf("rmg-cli (Runtime Memory Guardian) v%s\n",
+                    std::string(rmg::VERSION_STRING).c_str());
         return 0;
     }
 
@@ -187,8 +184,8 @@ int main(int argc, char** argv) {
     }
 
     auto guardianResult = options.targetSelf
-        ? rmg::api::RuntimeMemoryGuardian::createForSelf()
-        : rmg::api::RuntimeMemoryGuardian::createForProcess(*options.pid);
+                              ? rmg::api::RuntimeMemoryGuardian::createForSelf()
+                              : rmg::api::RuntimeMemoryGuardian::createForProcess(*options.pid);
 
     if (!guardianResult) {
         std::fprintf(stderr, "Error: failed to attach to target process: %s\n",
@@ -219,8 +216,8 @@ int main(int argc, char** argv) {
             return 1;
         }
 
-        auto loadResult = guardian.loadBaseline(
-            rmg::core::ByteView(fileBytes->data(), fileBytes->size()));
+        auto loadResult =
+            guardian.loadBaseline(rmg::core::ByteView(fileBytes->data(), fileBytes->size()));
         if (!loadResult) {
             std::fprintf(stderr, "Error: failed to load baseline: %s\n",
                          loadResult.error().toDiagnosticString().c_str());

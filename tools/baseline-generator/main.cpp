@@ -17,13 +17,13 @@
 //   1  Usage error or operational failure
 // ==============================================================================
 
+#include <rmg/rmg.hpp>
+
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <optional>
 #include <string>
-
-#include <rmg/rmg.hpp>
 
 namespace {
 
@@ -34,11 +34,10 @@ struct CliOptions {
 };
 
 void printUsage() {
-    std::printf(
-        "rmg-baseline-generator - Capture an integrity baseline to disk\n\n"
-        "Usage:\n"
-        "  rmg-baseline-generator --self --output <path>\n"
-        "  rmg-baseline-generator --pid <pid> --output <path>\n");
+    std::printf("rmg-baseline-generator - Capture an integrity baseline to disk\n\n"
+                "Usage:\n"
+                "  rmg-baseline-generator --self --output <path>\n"
+                "  rmg-baseline-generator --pid <pid> --output <path>\n");
 }
 
 [[nodiscard]] std::optional<CliOptions> parseArgs(int argc, char** argv) {
@@ -54,7 +53,8 @@ void printUsage() {
                 std::fprintf(stderr, "Error: --pid requires a value\n");
                 return std::nullopt;
             }
-            options.pid = static_cast<rmg::platform::NativeProcessId>(std::strtoul(argv[++i], nullptr, 10));
+            options.pid =
+                static_cast<rmg::platform::NativeProcessId>(std::strtoul(argv[++i], nullptr, 10));
         } else if (arg == "--output") {
             if (i + 1 >= argc) {
                 std::fprintf(stderr, "Error: --output requires a path\n");
@@ -78,7 +78,8 @@ void printUsage() {
     if (!file.is_open()) {
         return false;
     }
-    file.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size()));
+    file.write(reinterpret_cast<const char*>(data.data()),
+               static_cast<std::streamsize>(data.size()));
     return file.good();
 }
 
@@ -108,9 +109,8 @@ int main(int argc, char** argv) {
 
     auto platformTraits = rmg::platform::createPlatformTraits();
 
-    auto handleResult = options.targetSelf
-        ? rmg::platform::ProcessHandle::openSelf()
-        : rmg::platform::ProcessHandle::open(*options.pid);
+    auto handleResult = options.targetSelf ? rmg::platform::ProcessHandle::openSelf()
+                                           : rmg::platform::ProcessHandle::open(*options.pid);
 
     if (!handleResult) {
         std::fprintf(stderr, "Error: failed to open target process: %s\n",
@@ -134,12 +134,13 @@ int main(int argc, char** argv) {
     for (const auto& module : *modulesResult) {
         allSections.insert(allSections.end(), module.sections.begin(), module.sections.end());
     }
-    std::printf("Found %zu module(s), %zu code section(s) total.\n",
-                modulesResult->size(), allSections.size());
+    std::printf("Found %zu module(s), %zu code section(s) total.\n", modulesResult->size(),
+                allSections.size());
 
-    std::printf("Capturing baseline (hashing with %s)...\n", std::string(hashProvider.algorithmName()).c_str());
-    auto baselineResult = rmg::integrity::IntegrityBaseline::create(
-        allSections, *handleResult, scanner, hashProvider);
+    std::printf("Capturing baseline (hashing with %s)...\n",
+                std::string(hashProvider.algorithmName()).c_str());
+    auto baselineResult = rmg::integrity::IntegrityBaseline::create(allSections, *handleResult,
+                                                                    scanner, hashProvider);
     if (!baselineResult) {
         std::fprintf(stderr, "Error: failed to capture baseline: %s\n",
                      baselineResult.error().toDiagnosticString().c_str());
@@ -150,10 +151,12 @@ int main(int argc, char** argv) {
 
     std::vector<std::byte> serialized = baselineResult->serialize();
     if (!writeFileBytes(*options.outputPath, serialized)) {
-        std::fprintf(stderr, "Error: failed to write baseline to '%s'\n", options.outputPath->c_str());
+        std::fprintf(stderr, "Error: failed to write baseline to '%s'\n",
+                     options.outputPath->c_str());
         return 1;
     }
 
-    std::printf("Baseline written to '%s' (%zu bytes).\n", options.outputPath->c_str(), serialized.size());
+    std::printf("Baseline written to '%s' (%zu bytes).\n", options.outputPath->c_str(),
+                serialized.size());
     return 0;
 }

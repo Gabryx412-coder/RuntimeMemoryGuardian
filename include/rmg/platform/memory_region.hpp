@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include <string>
-
 #include <rmg/core/types.hpp>
+
+#include <string>
 
 namespace rmg::platform {
 

@@ -17,11 +17,6 @@
 
 #pragma once
 
-#include <atomic>
-#include <optional>
-#include <thread>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/event.hpp>
 #include <rmg/hooks/hook_detector.hpp>
@@ -34,6 +29,11 @@
 #include <rmg/platform/process_handle.hpp>
 #include <rmg/process/monitor_config.hpp>
 #include <rmg/process/monitor_event.hpp>
+
+#include <atomic>
+#include <optional>
+#include <thread>
+#include <vector>
 
 namespace rmg::process {
 
@@ -57,8 +57,7 @@ public:
     /// @param config          Initial monitoring configuration.
     ProcessMonitor(const rmg::platform::ProcessHandle& handle,
                    const rmg::platform::IPlatformTraits& platformTraits,
-                   const rmg::integrity::IHashProvider& hashProvider,
-                   MonitorConfig config = {});
+                   const rmg::integrity::IHashProvider& hashProvider, MonitorConfig config = {});
 
     ~ProcessMonitor();
 
@@ -84,7 +83,8 @@ public:
     ///        IntegrityChecker::verify() pass using the same baseline
     ///        ProcessMonitor's own cycles verify against, without
     ///        duplicating baseline state.
-    [[nodiscard]] const std::optional<rmg::integrity::IntegrityBaseline>& baseline() const noexcept {
+    [[nodiscard]] const std::optional<rmg::integrity::IntegrityBaseline>&
+    baseline() const noexcept {
         return baseline_;
     }
 
@@ -99,7 +99,9 @@ public:
     void stop();
 
     /// @brief True if the background monitoring thread is currently active.
-    [[nodiscard]] bool isRunning() const noexcept { return running_.load(std::memory_order_acquire); }
+    [[nodiscard]] bool isRunning() const noexcept {
+        return running_.load(std::memory_order_acquire);
+    }
 
     /// @brief Performs exactly one monitoring cycle synchronously on the
     ///        calling thread: optionally verifies integrity, scans for

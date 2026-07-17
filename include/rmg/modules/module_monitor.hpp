@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include <unordered_map>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/event.hpp>
 #include <rmg/modules/module_enumerator.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <unordered_map>
+#include <vector>
 
 namespace rmg::modules {
 
@@ -49,7 +49,9 @@ public:
     [[nodiscard]] rmg::core::Result<void> poll(const rmg::platform::ProcessHandle& handle);
 
     /// @brief The module set as of the most recent successful poll() call.
-    [[nodiscard]] const std::vector<ModuleInfo>& currentModules() const noexcept { return currentModules_; }
+    [[nodiscard]] const std::vector<ModuleInfo>& currentModules() const noexcept {
+        return currentModules_;
+    }
 
 private:
     const ModuleEnumerator* enumerator_;

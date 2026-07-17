@@ -45,7 +45,8 @@ std::vector<MemoryRegion> parseProcMaps(std::string_view mapsContent) {
     while (lineStart < mapsContent.size()) {
         const std::size_t lineEnd = mapsContent.find('\n', lineStart);
         const std::string_view line = mapsContent.substr(
-            lineStart, (lineEnd == std::string_view::npos ? mapsContent.size() : lineEnd) - lineStart);
+            lineStart,
+            (lineEnd == std::string_view::npos ? mapsContent.size() : lineEnd) - lineStart);
         lineStart = (lineEnd == std::string_view::npos) ? mapsContent.size() : lineEnd + 1;
 
         if (line.empty()) {
@@ -55,7 +56,8 @@ std::vector<MemoryRegion> parseProcMaps(std::string_view mapsContent) {
         // Split "<start>-<end>" address range.
         const std::size_t dashPos = line.find('-');
         const std::size_t firstSpace = line.find(' ');
-        if (dashPos == std::string_view::npos || firstSpace == std::string_view::npos || dashPos >= firstSpace) {
+        if (dashPos == std::string_view::npos || firstSpace == std::string_view::npos ||
+            dashPos >= firstSpace) {
             continue; // Malformed line; skip defensively.
         }
 
@@ -109,9 +111,8 @@ rmg::core::Result<std::string> readProcMapsFile(const ProcessHandle& handle) {
 
     std::ifstream file(mapsPath, std::ios::in);
     if (!file.is_open()) {
-        return rmg::core::fail<std::string>(
-            rmg::core::ErrorCode::PlatformError,
-            "failed to open " + mapsPath);
+        return rmg::core::fail<std::string>(rmg::core::ErrorCode::PlatformError,
+                                            "failed to open " + mapsPath);
     }
 
     std::ostringstream contents;
@@ -119,8 +120,7 @@ rmg::core::Result<std::string> readProcMapsFile(const ProcessHandle& handle) {
     return contents.str();
 }
 
-rmg::core::Result<std::vector<MemoryRegion>>
-enumerateRegionsLinux(const ProcessHandle& handle) {
+rmg::core::Result<std::vector<MemoryRegion>> enumerateRegionsLinux(const ProcessHandle& handle) {
     auto mapsContent = readProcMapsFile(handle);
     if (!mapsContent) {
         return std::unexpected(mapsContent.error());
@@ -128,8 +128,8 @@ enumerateRegionsLinux(const ProcessHandle& handle) {
     return parseProcMaps(*mapsContent);
 }
 
-rmg::core::Result<rmg::core::MemoryProtection>
-queryProtectionLinux(const ProcessHandle& handle, rmg::core::Address address) {
+rmg::core::Result<rmg::core::MemoryProtection> queryProtectionLinux(const ProcessHandle& handle,
+                                                                    rmg::core::Address address) {
     auto regions = enumerateRegionsLinux(handle);
     if (!regions) {
         return std::unexpected(regions.error());
@@ -141,9 +141,9 @@ queryProtectionLinux(const ProcessHandle& handle, rmg::core::Address address) {
         }
     }
 
-    return rmg::core::fail<rmg::core::MemoryProtection>(
-        rmg::core::ErrorCode::RegionNotFound,
-        "no mapped region contains address " + std::to_string(address));
+    return rmg::core::fail<rmg::core::MemoryProtection>(rmg::core::ErrorCode::RegionNotFound,
+                                                        "no mapped region contains address " +
+                                                            std::to_string(address));
 }
 
 } // namespace rmg::platform::detail

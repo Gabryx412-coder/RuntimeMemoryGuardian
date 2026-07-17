@@ -14,9 +14,9 @@
 // process's own address space.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/api/runtime_memory_guardian.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 

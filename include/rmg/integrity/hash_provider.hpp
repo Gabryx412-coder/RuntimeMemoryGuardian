@@ -12,10 +12,10 @@
 
 #pragma once
 
+#include <rmg/core/types.hpp>
+
 #include <memory>
 #include <vector>
-
-#include <rmg/core/types.hpp>
 
 namespace rmg::integrity {
 

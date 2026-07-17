@@ -11,16 +11,16 @@
 
 #pragma once
 
-#include <chrono>
-#include <optional>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/types.hpp>
 #include <rmg/platform/memory_region.hpp>
 #include <rmg/platform/platform_traits.hpp>
 #include <rmg/platform/process_handle.hpp>
 #include <rmg/utils/byte_buffer.hpp>
+
+#include <chrono>
+#include <optional>
+#include <vector>
 
 namespace rmg::memory {
 
@@ -67,7 +67,8 @@ public:
     [[nodiscard]] const std::vector<SnapshotRegion>& regions() const noexcept { return regions_; }
 
     /// @brief Finds the captured region containing @p address, if any.
-    [[nodiscard]] const SnapshotRegion* findRegionContaining(rmg::core::Address address) const noexcept;
+    [[nodiscard]] const SnapshotRegion*
+    findRegionContaining(rmg::core::Address address) const noexcept;
 
 private:
     MemorySnapshot() = default;

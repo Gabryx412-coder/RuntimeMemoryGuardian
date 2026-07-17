@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include <chrono>
-#include <optional>
-#include <string>
-
 #include <rmg/hooks/hook_types.hpp>
 #include <rmg/integrity/integrity_checker.hpp>
 #include <rmg/modules/module_info.hpp>
+
+#include <chrono>
+#include <optional>
+#include <string>
 
 namespace rmg::process {
 

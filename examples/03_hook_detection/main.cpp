@@ -12,9 +12,9 @@
 // not a bug in RMG.
 // ==============================================================================
 
-#include <cstdio>
-
 #include <rmg/rmg.hpp>
+
+#include <cstdio>
 
 int main() {
     std::printf("Runtime Memory Guardian - Example 03: Hook Detection\n\n");

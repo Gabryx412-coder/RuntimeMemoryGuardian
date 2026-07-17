@@ -3,9 +3,9 @@
 // File: tests/unit/core/test_error.cpp
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/core/error.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 

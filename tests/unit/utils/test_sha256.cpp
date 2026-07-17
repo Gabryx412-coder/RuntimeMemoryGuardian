@@ -6,10 +6,10 @@
 // vectors, ensuring the from-scratch implementation is standards-compliant.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/utils/sha256.hpp>
 #include <rmg/utils/string_utils.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -44,8 +44,8 @@ TEST(Sha256Test, TwoBlockMessageProducesKnownDigest) {
     // NIST test vector spanning multiple 512-bit blocks:
     // SHA-256("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq") =
     // 248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1
-    const auto digest = Sha256::hash(
-        asBytes("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"));
+    const auto digest =
+        Sha256::hash(asBytes("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"));
     EXPECT_EQ(digestToHex(digest),
               "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c");
 }

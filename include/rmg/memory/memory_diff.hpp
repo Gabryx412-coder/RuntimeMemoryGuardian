@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <vector>
-
 #include <rmg/core/types.hpp>
 #include <rmg/memory/memory_snapshot.hpp>
+
+#include <vector>
 
 namespace rmg::memory {
 
@@ -57,7 +57,8 @@ public:
     ///  two snapshots by base address. Regions present in only one snapshot
     /// are reflected via DiffResult::regionSetIdentical rather than as a
     /// byte-level change.
-    [[nodiscard]] static DiffResult compare(const MemorySnapshot& baseline, const MemorySnapshot& current);
+    [[nodiscard]] static DiffResult compare(const MemorySnapshot& baseline,
+                                            const MemorySnapshot& current);
 };
 
 } // namespace rmg::memory

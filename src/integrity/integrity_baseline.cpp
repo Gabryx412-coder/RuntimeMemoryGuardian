@@ -3,11 +3,10 @@
 // File: src/integrity/integrity_baseline.cpp
 // ==============================================================================
 
+#include <rmg/core/logger.hpp>
 #include <rmg/integrity/integrity_baseline.hpp>
 
 #include <cstring>
-
-#include <rmg/core/logger.hpp>
 
 namespace rmg::integrity {
 
@@ -34,7 +33,8 @@ void appendBytes(std::vector<std::byte>& buffer, rmg::core::ByteView bytes) {
 
 void appendString(std::vector<std::byte>& buffer, std::string_view text) {
     appendU32(buffer, static_cast<std::uint32_t>(text.size()));
-    appendBytes(buffer, rmg::core::ByteView(reinterpret_cast<const std::byte*>(text.data()), text.size()));
+    appendBytes(buffer,
+                rmg::core::ByteView(reinterpret_cast<const std::byte*>(text.data()), text.size()));
 }
 
 /// @brief Small cursor-based reader used by deserialize() for bounds-checked
@@ -49,7 +49,9 @@ public:
         }
         out = 0;
         for (int i = 0; i < 4; ++i) {
-            out |= static_cast<std::uint32_t>(static_cast<std::uint8_t>(data_[offset_ + static_cast<std::size_t>(i)])) << (8 * i);
+            out |= static_cast<std::uint32_t>(
+                       static_cast<std::uint8_t>(data_[offset_ + static_cast<std::size_t>(i)]))
+                   << (8 * i);
         }
         offset_ += 4;
         return true;
@@ -61,7 +63,9 @@ public:
         }
         out = 0;
         for (int i = 0; i < 8; ++i) {
-            out |= static_cast<std::uint64_t>(static_cast<std::uint8_t>(data_[offset_ + static_cast<std::size_t>(i)])) << (8 * i);
+            out |= static_cast<std::uint64_t>(
+                       static_cast<std::uint8_t>(data_[offset_ + static_cast<std::size_t>(i)]))
+                   << (8 * i);
         }
         offset_ += 8;
         return true;
@@ -96,11 +100,9 @@ private:
 
 } // namespace
 
-rmg::core::Result<IntegrityBaseline>
-IntegrityBaseline::create(std::span<const CodeSectionInfo> sections,
-                           const rmg::platform::ProcessHandle& handle,
-                           const rmg::memory::MemoryScanner& scanner,
-                           const IHashProvider& hashProvider) {
+rmg::core::Result<IntegrityBaseline> IntegrityBaseline::create(
+    std::span<const CodeSectionInfo> sections, const rmg::platform::ProcessHandle& handle,
+    const rmg::memory::MemoryScanner& scanner, const IHashProvider& hashProvider) {
     IntegrityBaseline baseline;
     baseline.capturedAt_ = std::chrono::system_clock::now();
     baseline.hashAlgorithmName_ = std::string(hashProvider.algorithmName());
@@ -110,8 +112,8 @@ IntegrityBaseline::create(std::span<const CodeSectionInfo> sections,
         auto buffer = scanner.read(handle, section.baseAddress, section.size);
         if (!buffer) {
             RMG_LOG_WARNING("IntegrityBaseline::create: failed to read section '" + section.name +
-                             "' of module '" + section.ownerModule + "': " +
-                             buffer.error().toDiagnosticString());
+                            "' of module '" + section.ownerModule +
+                            "': " + buffer.error().toDiagnosticString());
             continue;
         }
 
@@ -122,9 +124,10 @@ IntegrityBaseline::create(std::span<const CodeSectionInfo> sections,
     }
 
     if (baseline.entries_.empty() && !sections.empty()) {
-        return rmg::core::fail<IntegrityBaseline>(
-            rmg::core::ErrorCode::MemoryAccessFailure,
-            "failed to capture any of the " + std::to_string(sections.size()) + " requested sections");
+        return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::MemoryAccessFailure,
+                                                  "failed to capture any of the " +
+                                                      std::to_string(sections.size()) +
+                                                      " requested sections");
     }
 
     return baseline;
@@ -133,7 +136,8 @@ IntegrityBaseline::create(std::span<const CodeSectionInfo> sections,
 std::vector<std::byte> IntegrityBaseline::serialize() const {
     std::vector<std::byte> buffer;
 
-    appendBytes(buffer, rmg::core::ByteView(reinterpret_cast<const std::byte*>(MAGIC.data()), MAGIC.size()));
+    appendBytes(buffer, rmg::core::ByteView(reinterpret_cast<const std::byte*>(MAGIC.data()),
+                                            MAGIC.size()));
     appendU32(buffer, FORMAT_VERSION);
     appendString(buffer, hashAlgorithmName_);
     appendU32(buffer, static_cast<std::uint32_t>(entries_.size()));
@@ -157,29 +161,29 @@ rmg::core::Result<IntegrityBaseline> IntegrityBaseline::deserialize(rmg::core::B
     rmg::core::ByteView magicBytes;
     if (!reader.readBytes(MAGIC.size(), magicBytes) ||
         std::memcmp(magicBytes.data(), MAGIC.data(), MAGIC.size()) != 0) {
-        return rmg::core::fail<IntegrityBaseline>(
-            rmg::core::ErrorCode::SerializationError, "invalid baseline magic header");
+        return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::SerializationError,
+                                                  "invalid baseline magic header");
     }
 
     std::uint32_t version = 0;
     if (!reader.readU32(version) || version != FORMAT_VERSION) {
-        return rmg::core::fail<IntegrityBaseline>(
-            rmg::core::ErrorCode::SerializationError,
-            "unsupported baseline format version: " + std::to_string(version));
+        return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::SerializationError,
+                                                  "unsupported baseline format version: " +
+                                                      std::to_string(version));
     }
 
     IntegrityBaseline baseline;
     baseline.capturedAt_ = std::chrono::system_clock::now();
 
     if (!reader.readString(baseline.hashAlgorithmName_)) {
-        return rmg::core::fail<IntegrityBaseline>(
-            rmg::core::ErrorCode::SerializationError, "truncated baseline: algorithm name");
+        return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::SerializationError,
+                                                  "truncated baseline: algorithm name");
     }
 
     std::uint32_t entryCount = 0;
     if (!reader.readU32(entryCount)) {
-        return rmg::core::fail<IntegrityBaseline>(
-            rmg::core::ErrorCode::SerializationError, "truncated baseline: entry count");
+        return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::SerializationError,
+                                                  "truncated baseline: entry count");
     }
 
     baseline.entries_.reserve(entryCount);
@@ -196,9 +200,9 @@ rmg::core::Result<IntegrityBaseline> IntegrityBaseline::deserialize(rmg::core::B
             !reader.readString(entry.section.name) ||
             !reader.readString(entry.section.ownerModule) ||
             !reader.readString(entry.section.ownerModulePath)) {
-            return rmg::core::fail<IntegrityBaseline>(
-                rmg::core::ErrorCode::SerializationError,
-                "truncated baseline: entry " + std::to_string(i));
+            return rmg::core::fail<IntegrityBaseline>(rmg::core::ErrorCode::SerializationError,
+                                                      "truncated baseline: entry " +
+                                                          std::to_string(i));
         }
 
         entry.section.baseAddress = static_cast<rmg::core::Address>(baseAddress);

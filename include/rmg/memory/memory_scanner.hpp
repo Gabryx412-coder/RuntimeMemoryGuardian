@@ -11,10 +11,6 @@
 
 #pragma once
 
-#include <optional>
-#include <string>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/types.hpp>
 #include <rmg/memory/memory_region_enumerator.hpp>
@@ -22,6 +18,10 @@
 #include <rmg/platform/platform_traits.hpp>
 #include <rmg/platform/process_handle.hpp>
 #include <rmg/utils/byte_buffer.hpp>
+
+#include <optional>
+#include <string>
+#include <vector>
 
 namespace rmg::memory {
 
@@ -58,8 +58,8 @@ public:
 
     /// @brief Captures a MemorySnapshot of every region in @p handle that
     ///        matches @p filter.
-    [[nodiscard]] rmg::core::Result<MemorySnapshot>
-    scan(const rmg::platform::ProcessHandle& handle, const ScanFilter& filter = {}) const;
+    [[nodiscard]] rmg::core::Result<MemorySnapshot> scan(const rmg::platform::ProcessHandle& handle,
+                                                         const ScanFilter& filter = {}) const;
 
     /// @brief Reads exactly @p size bytes starting at @p address from
     ///        @p handle, returning them as an owning ByteBuffer.
@@ -69,10 +69,12 @@ public:
     /// knows the exact address range of interest (e.g. HookDetector reading
     /// a function prologue).
     [[nodiscard]] rmg::core::Result<rmg::utils::ByteBuffer>
-    read(const rmg::platform::ProcessHandle& handle, rmg::core::Address address, std::size_t size) const;
+    read(const rmg::platform::ProcessHandle& handle, rmg::core::Address address,
+         std::size_t size) const;
 
 private:
-    [[nodiscard]] bool matchesFilter(const rmg::platform::MemoryRegion& region, const ScanFilter& filter) const;
+    [[nodiscard]] bool matchesFilter(const rmg::platform::MemoryRegion& region,
+                                     const ScanFilter& filter) const;
 
     const rmg::platform::IPlatformTraits* platformTraits_;
     MemoryRegionEnumerator regionEnumerator_;

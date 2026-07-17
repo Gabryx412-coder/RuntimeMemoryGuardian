@@ -30,7 +30,7 @@ std::unique_ptr<IPlatformTraits> createPlatformTraits() {
 }
 
 #else
-#error "Runtime Memory Guardian: unsupported platform (platform_factory.cpp)"
+    #error "Runtime Memory Guardian: unsupported platform (platform_factory.cpp)"
 #endif
 
 } // namespace rmg::platform

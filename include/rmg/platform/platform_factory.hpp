@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include <memory>
-
 #include <rmg/platform/platform_traits.hpp>
+
+#include <memory>
 
 namespace rmg::platform {
 

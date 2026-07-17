@@ -12,12 +12,12 @@
 
 #pragma once
 
+#include <rmg/core/types.hpp>
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <span>
-
-#include <rmg/core/types.hpp>
 
 namespace rmg::utils {
 

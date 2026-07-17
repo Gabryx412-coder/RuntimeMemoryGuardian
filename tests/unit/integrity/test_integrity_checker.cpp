@@ -7,10 +7,10 @@
 // reported as a TamperedSection.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/integrity/integrity_checker.hpp>
 #include <rmg/memory/memory_scanner.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -30,7 +30,9 @@ public:
     [[nodiscard]] rmg::core::Result<std::vector<MemoryRegion>>
     enumerateRegions(const ProcessHandle&) const override {
         return std::vector<MemoryRegion>{
-            MemoryRegion{baseAddress, buffer.size(), rmg::core::MemoryProtection::Read | rmg::core::MemoryProtection::Execute, "", "", true}};
+            MemoryRegion{baseAddress, buffer.size(),
+                         rmg::core::MemoryProtection::Read | rmg::core::MemoryProtection::Execute,
+                         "", "", true}};
     }
 
     [[nodiscard]] rmg::core::Result<std::vector<rmg::platform::NativeModuleInfo>>
@@ -39,14 +41,17 @@ public:
     }
 
     [[nodiscard]] rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle&, rmg::core::Address address, MutableByteView destination) const override {
+    readMemory(const ProcessHandle&, rmg::core::Address address,
+               MutableByteView destination) const override {
         if (address < baseAddress || address >= baseAddress + buffer.size()) {
-            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound, "out of range");
+            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound,
+                                                "out of range");
         }
         const std::size_t offset = static_cast<std::size_t>(address - baseAddress);
         const std::size_t available = buffer.size() - offset;
         const std::size_t toCopy = std::min(available, destination.size());
-        std::copy_n(buffer.begin() + static_cast<std::ptrdiff_t>(offset), toCopy, destination.begin());
+        std::copy_n(buffer.begin() + static_cast<std::ptrdiff_t>(offset), toCopy,
+                    destination.begin());
         return toCopy;
     }
 
@@ -79,8 +84,8 @@ TEST_F(IntegrityCheckerTest, UnmodifiedSectionVerifiesAsValid) {
     rmg::memory::MemoryScanner scanner(platform_);
     rmg::integrity::Sha256HashProvider hashProvider;
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(
-        std::vector{section_}, handle_, scanner, hashProvider);
+    auto baseline = rmg::integrity::IntegrityBaseline::create(std::vector{section_}, handle_,
+                                                              scanner, hashProvider);
     ASSERT_TRUE(baseline.has_value());
 
     rmg::integrity::IntegrityChecker checker(scanner, hashProvider);
@@ -95,8 +100,8 @@ TEST_F(IntegrityCheckerTest, ModifiedSectionIsReportedAsTampered) {
     rmg::memory::MemoryScanner scanner(platform_);
     rmg::integrity::Sha256HashProvider hashProvider;
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(
-        std::vector{section_}, handle_, scanner, hashProvider);
+    auto baseline = rmg::integrity::IntegrityBaseline::create(std::vector{section_}, handle_,
+                                                              scanner, hashProvider);
     ASSERT_TRUE(baseline.has_value());
 
     // Simulate an inline patch: overwrite the first byte.
@@ -117,8 +122,8 @@ TEST_F(IntegrityCheckerTest, MismatchedAlgorithmBetweenBaselineAndCheckerFails) 
     rmg::integrity::Sha256HashProvider sha256Provider;
     rmg::integrity::Crc32HashProvider crc32Provider;
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(
-        std::vector{section_}, handle_, scanner, sha256Provider);
+    auto baseline = rmg::integrity::IntegrityBaseline::create(std::vector{section_}, handle_,
+                                                              scanner, sha256Provider);
     ASSERT_TRUE(baseline.has_value());
 
     rmg::integrity::IntegrityChecker checker(scanner, crc32Provider);
@@ -132,8 +137,8 @@ TEST_F(IntegrityCheckerTest, BaselineSerializationRoundTripsCorrectly) {
     rmg::memory::MemoryScanner scanner(platform_);
     rmg::integrity::Sha256HashProvider hashProvider;
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(
-        std::vector{section_}, handle_, scanner, hashProvider);
+    auto baseline = rmg::integrity::IntegrityBaseline::create(std::vector{section_}, handle_,
+                                                              scanner, hashProvider);
     ASSERT_TRUE(baseline.has_value());
 
     std::vector<std::byte> serialized = baseline->serialize();
@@ -148,7 +153,8 @@ TEST_F(IntegrityCheckerTest, BaselineSerializationRoundTripsCorrectly) {
 }
 
 TEST(IntegrityBaselineTest, DeserializeRejectsInvalidMagic) {
-    std::vector<std::byte> garbage = {std::byte{'X'}, std::byte{'X'}, std::byte{'X'}, std::byte{'X'}};
+    std::vector<std::byte> garbage = {std::byte{'X'}, std::byte{'X'}, std::byte{'X'},
+                                      std::byte{'X'}};
     auto result = rmg::integrity::IntegrityBaseline::deserialize(
         rmg::core::ByteView(garbage.data(), garbage.size()));
 
@@ -157,7 +163,8 @@ TEST(IntegrityBaselineTest, DeserializeRejectsInvalidMagic) {
 }
 
 TEST(IntegrityBaselineTest, DeserializeRejectsTruncatedData) {
-    std::vector<std::byte> truncated = {std::byte{'R'}, std::byte{'M'}, std::byte{'G'}, std::byte{'B'}};
+    std::vector<std::byte> truncated = {std::byte{'R'}, std::byte{'M'}, std::byte{'G'},
+                                        std::byte{'B'}};
     auto result = rmg::integrity::IntegrityBaseline::deserialize(
         rmg::core::ByteView(truncated.data(), truncated.size()));
 

@@ -15,13 +15,13 @@
 
 #pragma once
 
-#include <cstddef>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/types.hpp>
 #include <rmg/platform/memory_region.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <cstddef>
+#include <vector>
 
 namespace rmg::platform {
 
@@ -62,8 +62,7 @@ public:
     ///                     partial read is possible near the end of a
     ///                     mapped region and is not itself an error).
     [[nodiscard]] virtual rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle& handle,
-               rmg::core::Address address,
+    readMemory(const ProcessHandle& handle, rmg::core::Address address,
                rmg::core::MutableByteView destination) const = 0;
 
     /// @brief Queries the protection flags currently applied at @p address

@@ -8,12 +8,12 @@
 // should expect when hook detection is enabled.
 // ==============================================================================
 
-#include <benchmark/benchmark.h>
-
 #include <rmg/hooks/hook_detector.hpp>
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/modules/module_enumerator.hpp>
 #include <rmg/platform/platform_factory.hpp>
+
+#include <benchmark/benchmark.h>
 
 namespace {
 
@@ -60,7 +60,8 @@ BENCHMARK_F(HookDetectorBenchmark, ScanAllModulesForHooks)(benchmark::State& sta
         }
     }
 
-    state.SetItemsProcessed(static_cast<int64_t>(state.iterations()) * static_cast<int64_t>(modules.size()));
+    state.SetItemsProcessed(static_cast<int64_t>(state.iterations()) *
+                            static_cast<int64_t>(modules.size()));
 }
 
 BENCHMARK_F(HookDetectorBenchmark, ModuleEnumerationCost)(benchmark::State& state) {

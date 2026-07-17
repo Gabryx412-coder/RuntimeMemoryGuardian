@@ -8,15 +8,14 @@
 // (start()/stop()).
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
-#include <atomic>
-#include <chrono>
-#include <thread>
-
 #include <rmg/integrity/hash_provider.hpp>
 #include <rmg/platform/platform_factory.hpp>
 #include <rmg/process/process_monitor.hpp>
+
+#include <atomic>
+#include <chrono>
+#include <gtest/gtest.h>
+#include <thread>
 
 namespace {
 
@@ -57,7 +56,8 @@ TEST(ProcessMonitorIntegrationTest, BaselineAccessorReflectsInstalledBaseline) {
         sections.insert(sections.end(), module.sections.begin(), module.sections.end());
     }
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(sections, *handle, scanner, hashProvider);
+    auto baseline =
+        rmg::integrity::IntegrityBaseline::create(sections, *handle, scanner, hashProvider);
     ASSERT_TRUE(baseline.has_value());
 
     monitor.setBaseline(std::move(*baseline));
@@ -98,7 +98,8 @@ TEST(ProcessMonitorIntegrationTest, IntegrityViolationEventIsEmittedWhenBaseline
         sections.insert(sections.end(), module.sections.begin(), module.sections.end());
     }
 
-    auto baseline = rmg::integrity::IntegrityBaseline::create(sections, *handle, scanner, hashProvider);
+    auto baseline =
+        rmg::integrity::IntegrityBaseline::create(sections, *handle, scanner, hashProvider);
     ASSERT_TRUE(baseline.has_value());
 
     rmg::process::MonitorConfig config;

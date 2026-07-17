@@ -3,9 +3,9 @@
 // File: tests/unit/utils/test_crc32.cpp
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/utils/crc32.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 

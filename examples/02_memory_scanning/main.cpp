@@ -6,9 +6,9 @@
 // current process and applying filters (executable-only, W^X exclusion).
 // ==============================================================================
 
-#include <cstdio>
-
 #include <rmg/rmg.hpp>
+
+#include <cstdio>
 
 namespace {
 
@@ -19,8 +19,7 @@ void printRegionSummary(const rmg::memory::MemorySnapshot& snapshot) {
     for (const auto& snapshotRegion : snapshot.regions()) {
         const auto& region = snapshotRegion.region;
         std::printf("  0x%016zx  size=%-10zu prot=%-4s module=%s\n",
-                    static_cast<std::size_t>(region.baseAddress),
-                    region.size,
+                    static_cast<std::size_t>(region.baseAddress), region.size,
                     rmg::core::toString(region.protection).c_str(),
                     region.moduleName.empty() ? "<anonymous>" : region.moduleName.c_str());
         totalBytes += snapshotRegion.contents.size();
@@ -63,7 +62,8 @@ int main() {
 
     auto allExecutable = scanner.scan(*handleResult, wxFilter);
     if (!allExecutable) {
-        std::fprintf(stderr, "Scan failed: %s\n", allExecutable.error().toDiagnosticString().c_str());
+        std::fprintf(stderr, "Scan failed: %s\n",
+                     allExecutable.error().toDiagnosticString().c_str());
         return 1;
     }
 

@@ -17,16 +17,16 @@
 
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/core/types.hpp>
 #include <rmg/platform/memory_region.hpp>
 #include <rmg/platform/native_types.hpp>
-#include <rmg/platform/process_handle.hpp>
 #include <rmg/platform/platform_traits.hpp>
+#include <rmg/platform/process_handle.hpp>
+
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace rmg::platform::detail {
 
@@ -63,8 +63,7 @@ enumerateModulesWindows(const ProcessHandle& handle);
 /// @brief Implements IPlatformTraits::readMemory on Windows via
 ///        ReadProcessMemory.
 [[nodiscard]] rmg::core::Result<std::size_t>
-readMemoryWindows(const ProcessHandle& handle,
-                  rmg::core::Address address,
+readMemoryWindows(const ProcessHandle& handle, rmg::core::Address address,
                   rmg::core::MutableByteView destination);
 
 /// @brief Implements IPlatformTraits::queryProtection on Windows via

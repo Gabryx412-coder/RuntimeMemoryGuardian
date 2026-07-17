@@ -9,10 +9,10 @@
 // TODO scope (see src/hooks/iat_hook_detector.cpp / eat_hook_detector.cpp).
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/hooks/hook_detector.hpp>
 #include <rmg/memory/memory_scanner.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -31,7 +31,8 @@ public:
     enumerateRegions(const ProcessHandle&) const override {
         return std::vector<MemoryRegion>{
             MemoryRegion{sectionBase, sectionBytes.size(),
-                        rmg::core::MemoryProtection::Read | rmg::core::MemoryProtection::Execute, "", "", true}};
+                         rmg::core::MemoryProtection::Read | rmg::core::MemoryProtection::Execute,
+                         "", "", true}};
     }
 
     [[nodiscard]] rmg::core::Result<std::vector<rmg::platform::NativeModuleInfo>>
@@ -40,14 +41,17 @@ public:
     }
 
     [[nodiscard]] rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle&, rmg::core::Address address, MutableByteView destination) const override {
+    readMemory(const ProcessHandle&, rmg::core::Address address,
+               MutableByteView destination) const override {
         if (address < sectionBase || address >= sectionBase + sectionBytes.size()) {
-            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound, "out of range");
+            return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::RegionNotFound,
+                                                "out of range");
         }
         const std::size_t offset = static_cast<std::size_t>(address - sectionBase);
         const std::size_t available = sectionBytes.size() - offset;
         const std::size_t toCopy = std::min(available, destination.size());
-        std::copy_n(sectionBytes.begin() + static_cast<std::ptrdiff_t>(offset), toCopy, destination.begin());
+        std::copy_n(sectionBytes.begin() + static_cast<std::ptrdiff_t>(offset), toCopy,
+                    destination.begin());
         return toCopy;
     }
 

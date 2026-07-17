@@ -3,9 +3,8 @@
 // File: src/process/process_monitor.cpp
 // ==============================================================================
 
-#include <rmg/process/process_monitor.hpp>
-
 #include <rmg/core/logger.hpp>
+#include <rmg/process/process_monitor.hpp>
 
 namespace rmg::process {
 
@@ -13,14 +12,9 @@ ProcessMonitor::ProcessMonitor(const rmg::platform::ProcessHandle& handle,
                                const rmg::platform::IPlatformTraits& platformTraits,
                                const rmg::integrity::IHashProvider& hashProvider,
                                MonitorConfig config)
-    : handle_(&handle),
-      platformTraits_(&platformTraits),
-      hashProvider_(&hashProvider),
-      config_(config),
-      scanner_(platformTraits),
-      moduleEnumerator_(platformTraits),
-      moduleMonitor_(moduleEnumerator_),
-      hookDetector_(scanner_),
+    : handle_(&handle), platformTraits_(&platformTraits), hashProvider_(&hashProvider),
+      config_(config), scanner_(platformTraits), moduleEnumerator_(platformTraits),
+      moduleMonitor_(moduleEnumerator_), hookDetector_(scanner_),
       integrityChecker_(scanner_, hashProvider) {}
 
 ProcessMonitor::~ProcessMonitor() {
@@ -89,7 +83,7 @@ void ProcessMonitor::runIntegrityCheckCycle() {
         event.type = MonitorEventType::IntegrityViolation;
         event.timestamp = std::chrono::system_clock::now();
         event.description = "integrity violation in section '" + tampered.section.name +
-                             "' of module '" + tampered.section.ownerModule + "'";
+                            "' of module '" + tampered.section.ownerModule + "'";
         event.tamperedSection = tampered;
         onEvent.emit(event);
     }
@@ -126,8 +120,8 @@ void ProcessMonitor::runModuleMonitoringCycle() {
     // Wire ModuleMonitor's signals to onEvent for exactly this poll() call,
     // then disconnect afterwards so listeners are not duplicated across
     // cycles (ModuleMonitor is a long-lived member reused every cycle).
-    rmg::core::Connection loadedConnection = moduleMonitor_.onModuleLoaded.connect(
-        [this](const rmg::modules::ModuleInfo& module) {
+    rmg::core::Connection loadedConnection =
+        moduleMonitor_.onModuleLoaded.connect([this](const rmg::modules::ModuleInfo& module) {
             MonitorEvent event;
             event.type = MonitorEventType::ModuleLoaded;
             event.timestamp = std::chrono::system_clock::now();
@@ -136,8 +130,8 @@ void ProcessMonitor::runModuleMonitoringCycle() {
             onEvent.emit(event);
         });
 
-    rmg::core::Connection unloadedConnection = moduleMonitor_.onModuleUnloaded.connect(
-        [this](const rmg::modules::ModuleInfo& module) {
+    rmg::core::Connection unloadedConnection =
+        moduleMonitor_.onModuleUnloaded.connect([this](const rmg::modules::ModuleInfo& module) {
             MonitorEvent event;
             event.type = MonitorEventType::ModuleUnloaded;
             event.timestamp = std::chrono::system_clock::now();

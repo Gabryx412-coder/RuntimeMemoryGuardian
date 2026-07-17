@@ -3,9 +3,9 @@
 // File: tests/unit/integrity/test_hash_provider.cpp
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/integrity/hash_provider.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 

@@ -97,8 +97,7 @@ private:
 ///
 /// @tparam T The success payload type. Use `Result<void>` for operations
 ///           that either succeed or fail without producing a value.
-template <typename T>
-using Result = std::expected<T, Error>;
+template <typename T> using Result = std::expected<T, Error>;
 
 /// @brief Convenience factory for constructing an unexpected Result<T> from
 ///        an ErrorCode and optional context, without repeating

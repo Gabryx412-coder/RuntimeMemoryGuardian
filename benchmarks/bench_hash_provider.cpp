@@ -9,11 +9,10 @@
 // change-detection only).
 // ==============================================================================
 
-#include <benchmark/benchmark.h>
-
-#include <vector>
-
 #include <rmg/integrity/hash_provider.hpp>
+
+#include <benchmark/benchmark.h>
+#include <vector>
 
 namespace {
 

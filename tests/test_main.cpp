@@ -7,9 +7,9 @@
 // test output focused on GoogleTest's own reporting.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/core/logger.hpp>
+
+#include <gtest/gtest.h>
 
 int main(int argc, char** argv) {
     // Silence RMG's internal diagnostic logging during tests: most tests

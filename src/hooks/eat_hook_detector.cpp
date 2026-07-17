@@ -8,9 +8,8 @@
 // rmg::modules::PeImageReader / ElfImageReader.
 // ==============================================================================
 
-#include <rmg/hooks/eat_hook_detector.hpp>
-
 #include <rmg/core/logger.hpp>
+#include <rmg/hooks/eat_hook_detector.hpp>
 #include <rmg/utils/string_utils.hpp>
 
 namespace rmg::hooks {
@@ -26,8 +25,8 @@ namespace {
 ///       distinguish a documented forwarder string from an unexpected
 ///       redirect; this is tracked by the TODO below alongside the export
 ///       table walk itself.
-[[nodiscard]] [[maybe_unused]] bool resolvesWithinOwnModule(rmg::core::Address address,
-                                          const rmg::modules::ModuleInfo& module) {
+[[nodiscard]] [[maybe_unused]] bool
+resolvesWithinOwnModule(rmg::core::Address address, const rmg::modules::ModuleInfo& module) {
     return module.contains(address);
 }
 
@@ -35,7 +34,7 @@ namespace {
 
 rmg::core::Result<std::vector<HookFinding>>
 EatHookDetector::scan(const rmg::platform::ProcessHandle& handle,
-                       const rmg::modules::ModuleInfo& targetModule) const {
+                      const rmg::modules::ModuleInfo& targetModule) const {
     std::vector<HookFinding> findings;
 
     // TODO(#eat-image-parser): Locate the target module's export directory
@@ -58,7 +57,8 @@ EatHookDetector::scan(const rmg::platform::ProcessHandle& handle,
     // The validation predicate (resolvesWithinOwnModule) above is already
     // implemented and unit-testable independently of the image parser.
 
-    RMG_LOG_DEBUG("EatHookDetector::scan: image-format export-table parsing not yet implemented for module '" +
+    RMG_LOG_DEBUG("EatHookDetector::scan: image-format export-table parsing not yet implemented "
+                  "for module '" +
                   targetModule.name + "'; returning no findings.");
 
     (void)handle;

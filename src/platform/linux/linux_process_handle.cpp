@@ -15,10 +15,9 @@
 
 #include <cerrno>
 #include <cstring>
-#include <string>
-
 #include <fcntl.h>
 #include <signal.h>
+#include <string>
 #include <unistd.h>
 
 namespace rmg::platform {
@@ -34,8 +33,7 @@ rmg::core::Result<ProcessHandle> ProcessHandle::open(NativeProcessId processId) 
     if (::kill(static_cast<pid_t>(processId), 0) != 0) {
         if (errno == ESRCH) {
             return rmg::core::fail<ProcessHandle>(
-                rmg::core::ErrorCode::NotFound,
-                "no such process id " + std::to_string(processId));
+                rmg::core::ErrorCode::NotFound, "no such process id " + std::to_string(processId));
         }
         if (errno == EPERM) {
             return rmg::core::fail<ProcessHandle>(
@@ -57,13 +55,13 @@ rmg::core::Result<ProcessHandle> ProcessHandle::open(NativeProcessId processId) 
                 "open(" + memPath + ") failed: " + detail::errnoToString(savedErrno));
         }
         if (savedErrno == ENOENT) {
-            return rmg::core::fail<ProcessHandle>(
-                rmg::core::ErrorCode::NotFound,
-                "process " + std::to_string(processId) + " no longer exists");
+            return rmg::core::fail<ProcessHandle>(rmg::core::ErrorCode::NotFound,
+                                                  "process " + std::to_string(processId) +
+                                                      " no longer exists");
         }
-        return rmg::core::fail<ProcessHandle>(
-            rmg::core::ErrorCode::PlatformError,
-            "open(" + memPath + ") failed: " + detail::errnoToString(savedErrno));
+        return rmg::core::fail<ProcessHandle>(rmg::core::ErrorCode::PlatformError,
+                                              "open(" + memPath +
+                                                  ") failed: " + detail::errnoToString(savedErrno));
     }
 
     return ProcessHandle(fd, processId);
@@ -147,21 +145,17 @@ std::string errnoToString(int errnoValue) {
     return "[" + std::to_string(errnoValue) + "] " + text;
 }
 
-rmg::core::Result<std::size_t>
-readMemoryLinux(const ProcessHandle& handle,
-                 rmg::core::Address address,
-                 rmg::core::MutableByteView destination) {
-    const ssize_t bytesRead = ::pread(
-        handle.nativeHandle(),
-        destination.data(),
-        destination.size(),
-        static_cast<off_t>(address));
+rmg::core::Result<std::size_t> readMemoryLinux(const ProcessHandle& handle,
+                                               rmg::core::Address address,
+                                               rmg::core::MutableByteView destination) {
+    const ssize_t bytesRead = ::pread(handle.nativeHandle(), destination.data(), destination.size(),
+                                      static_cast<off_t>(address));
 
     if (bytesRead < 0) {
-        return rmg::core::fail<std::size_t>(
-            rmg::core::ErrorCode::MemoryAccessFailure,
-            "pread(/proc/" + std::to_string(handle.processId()) + "/mem) failed at " +
-                std::to_string(address) + ": " + errnoToString(errno));
+        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::MemoryAccessFailure,
+                                            "pread(/proc/" + std::to_string(handle.processId()) +
+                                                "/mem) failed at " + std::to_string(address) +
+                                                ": " + errnoToString(errno));
     }
 
     // pread() returning 0 here means we hit the end of a readable region;

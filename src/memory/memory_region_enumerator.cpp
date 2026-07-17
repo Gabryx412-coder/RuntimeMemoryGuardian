@@ -23,8 +23,7 @@ MemoryRegionEnumerator::enumerateExecutable(const rmg::platform::ProcessHandle& 
     }
 
     std::vector<rmg::platform::MemoryRegion> executableRegions;
-    std::copy_if(allRegions->begin(), allRegions->end(),
-                 std::back_inserter(executableRegions),
+    std::copy_if(allRegions->begin(), allRegions->end(), std::back_inserter(executableRegions),
                  [](const rmg::platform::MemoryRegion& region) {
                      return region.isCommitted && region.isExecutable();
                  });

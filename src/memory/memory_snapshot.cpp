@@ -3,9 +3,8 @@
 // File: src/memory/memory_snapshot.cpp
 // ==============================================================================
 
-#include <rmg/memory/memory_snapshot.hpp>
-
 #include <rmg/core/logger.hpp>
+#include <rmg/memory/memory_snapshot.hpp>
 
 namespace rmg::memory {
 
@@ -20,7 +19,8 @@ MemorySnapshot::capture(const rmg::platform::ProcessHandle& handle,
     for (const rmg::platform::MemoryRegion& region : regions) {
         rmg::utils::ByteBuffer buffer(region.size);
 
-        auto bytesRead = platformTraits.readMemory(handle, region.baseAddress, buffer.mutableView());
+        auto bytesRead =
+            platformTraits.readMemory(handle, region.baseAddress, buffer.mutableView());
         if (!bytesRead) {
             RMG_LOG_DEBUG("MemorySnapshot::capture: skipping region at " +
                           std::to_string(region.baseAddress) + " (" +
@@ -39,15 +39,17 @@ MemorySnapshot::capture(const rmg::platform::ProcessHandle& handle,
     }
 
     if (snapshot.regions_.empty() && !regions.empty()) {
-        return rmg::core::fail<MemorySnapshot>(
-            rmg::core::ErrorCode::MemoryAccessFailure,
-            "failed to capture any of the " + std::to_string(regions.size()) + " requested regions");
+        return rmg::core::fail<MemorySnapshot>(rmg::core::ErrorCode::MemoryAccessFailure,
+                                               "failed to capture any of the " +
+                                                   std::to_string(regions.size()) +
+                                                   " requested regions");
     }
 
     return snapshot;
 }
 
-const SnapshotRegion* MemorySnapshot::findRegionContaining(rmg::core::Address address) const noexcept {
+const SnapshotRegion*
+MemorySnapshot::findRegionContaining(rmg::core::Address address) const noexcept {
     for (const SnapshotRegion& entry : regions_) {
         if (entry.region.contains(address)) {
             return &entry;

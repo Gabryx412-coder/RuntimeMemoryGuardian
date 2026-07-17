@@ -49,12 +49,16 @@ enum class MemoryProtection : std::uint8_t {
     Guard = 1U << 3,
 };
 
-[[nodiscard]] constexpr MemoryProtection operator|(MemoryProtection lhs, MemoryProtection rhs) noexcept {
-    return static_cast<MemoryProtection>(static_cast<std::uint8_t>(lhs) | static_cast<std::uint8_t>(rhs));
+[[nodiscard]] constexpr MemoryProtection operator|(MemoryProtection lhs,
+                                                   MemoryProtection rhs) noexcept {
+    return static_cast<MemoryProtection>(static_cast<std::uint8_t>(lhs) |
+                                         static_cast<std::uint8_t>(rhs));
 }
 
-[[nodiscard]] constexpr MemoryProtection operator&(MemoryProtection lhs, MemoryProtection rhs) noexcept {
-    return static_cast<MemoryProtection>(static_cast<std::uint8_t>(lhs) & static_cast<std::uint8_t>(rhs));
+[[nodiscard]] constexpr MemoryProtection operator&(MemoryProtection lhs,
+                                                   MemoryProtection rhs) noexcept {
+    return static_cast<MemoryProtection>(static_cast<std::uint8_t>(lhs) &
+                                         static_cast<std::uint8_t>(rhs));
 }
 
 [[nodiscard]] constexpr bool hasFlag(MemoryProtection value, MemoryProtection flag) noexcept {

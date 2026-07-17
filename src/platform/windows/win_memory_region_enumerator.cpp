@@ -42,8 +42,7 @@ namespace {
 
 } // namespace
 
-rmg::core::Result<std::vector<MemoryRegion>>
-enumerateRegionsWindows(const ProcessHandle& handle) {
+rmg::core::Result<std::vector<MemoryRegion>> enumerateRegionsWindows(const ProcessHandle& handle) {
     HANDLE winHandle = toWinHandle(handle.nativeHandle());
 
     std::vector<MemoryRegion> regions;
@@ -73,9 +72,8 @@ enumerateRegionsWindows(const ProcessHandle& handle) {
         // Advance past the region we just inspected. Guard against a
         // zero-size region (should not normally happen) to avoid an
         // infinite loop.
-        const std::uint8_t* nextAddress =
-            reinterpret_cast<const std::uint8_t*>(info.BaseAddress) +
-            (info.RegionSize != 0 ? info.RegionSize : 1);
+        const std::uint8_t* nextAddress = reinterpret_cast<const std::uint8_t*>(info.BaseAddress) +
+                                          (info.RegionSize != 0 ? info.RegionSize : 1);
 
         if (nextAddress <= address) {
             break;

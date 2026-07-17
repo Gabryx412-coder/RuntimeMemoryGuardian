@@ -4,15 +4,15 @@
 // ==============================================================================
 
 #include <rmg/memory/memory_scanner.hpp>
+#include <rmg/utils/string_utils.hpp>
 
 #include <algorithm>
 #include <iterator>
 
-#include <rmg/utils/string_utils.hpp>
-
 namespace rmg::memory {
 
-bool MemoryScanner::matchesFilter(const rmg::platform::MemoryRegion& region, const ScanFilter& filter) const {
+bool MemoryScanner::matchesFilter(const rmg::platform::MemoryRegion& region,
+                                  const ScanFilter& filter) const {
     if (!region.isCommitted) {
         return false;
     }
@@ -34,8 +34,8 @@ bool MemoryScanner::matchesFilter(const rmg::platform::MemoryRegion& region, con
     return true;
 }
 
-rmg::core::Result<MemorySnapshot>
-MemoryScanner::scan(const rmg::platform::ProcessHandle& handle, const ScanFilter& filter) const {
+rmg::core::Result<MemorySnapshot> MemoryScanner::scan(const rmg::platform::ProcessHandle& handle,
+                                                      const ScanFilter& filter) const {
     auto allRegions = regionEnumerator_.enumerate(handle);
     if (!allRegions) {
         return std::unexpected(allRegions.error());
@@ -51,7 +51,8 @@ MemoryScanner::scan(const rmg::platform::ProcessHandle& handle, const ScanFilter
 }
 
 rmg::core::Result<rmg::utils::ByteBuffer>
-MemoryScanner::read(const rmg::platform::ProcessHandle& handle, rmg::core::Address address, std::size_t size) const {
+MemoryScanner::read(const rmg::platform::ProcessHandle& handle, rmg::core::Address address,
+                    std::size_t size) const {
     rmg::utils::ByteBuffer buffer(size);
 
     auto bytesRead = platformTraits_->readMemory(handle, address, buffer.mutableView());

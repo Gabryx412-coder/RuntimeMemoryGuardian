@@ -9,10 +9,10 @@
 // (expected, stable) module set producing no further events.
 // ==============================================================================
 
+#include <rmg/rmg.hpp>
+
 #include <cstdio>
 #include <thread>
-
-#include <rmg/rmg.hpp>
 
 int main() {
     std::printf("Runtime Memory Guardian - Example 04: Module Monitoring\n\n");
@@ -29,22 +29,20 @@ int main() {
     rmg::modules::ModuleMonitor monitor(enumerator);
 
     monitor.onModuleLoaded.connect([](const rmg::modules::ModuleInfo& module) {
-        std::printf("[LOADED]   %-30s base=0x%016zx size=%zu\n",
-                    module.name.c_str(),
-                    static_cast<std::size_t>(module.baseAddress),
-                    module.size);
+        std::printf("[LOADED]   %-30s base=0x%016zx size=%zu\n", module.name.c_str(),
+                    static_cast<std::size_t>(module.baseAddress), module.size);
     });
 
     monitor.onModuleUnloaded.connect([](const rmg::modules::ModuleInfo& module) {
-        std::printf("[UNLOADED] %-30s (was at 0x%016zx)\n",
-                    module.name.c_str(),
+        std::printf("[UNLOADED] %-30s (was at 0x%016zx)\n", module.name.c_str(),
                     static_cast<std::size_t>(module.baseAddress));
     });
 
     std::printf("--- First poll (baseline: reports every currently loaded module) ---\n");
     auto firstPoll = monitor.poll(*handleResult);
     if (!firstPoll) {
-        std::fprintf(stderr, "First poll failed: %s\n", firstPoll.error().toDiagnosticString().c_str());
+        std::fprintf(stderr, "First poll failed: %s\n",
+                     firstPoll.error().toDiagnosticString().c_str());
         return 1;
     }
     std::printf("Total modules tracked: %zu\n\n", monitor.currentModules().size());
@@ -54,7 +52,8 @@ int main() {
 
     auto secondPoll = monitor.poll(*handleResult);
     if (!secondPoll) {
-        std::fprintf(stderr, "Second poll failed: %s\n", secondPoll.error().toDiagnosticString().c_str());
+        std::fprintf(stderr, "Second poll failed: %s\n",
+                     secondPoll.error().toDiagnosticString().c_str());
         return 1;
     }
     std::printf("(No output above this line means no modules changed, as expected.)\n");

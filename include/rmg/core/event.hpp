@@ -46,8 +46,7 @@ private:
 /// lock, so a listener is free to call connect()/disconnect() on the same
 /// signal without deadlocking (at the cost of that listener not observing
 /// changes made during the in-flight emit).
-template <typename... Args>
-class Signal {
+template <typename... Args> class Signal {
 public:
     using Slot = std::function<void(Args...)>;
 
@@ -67,7 +66,8 @@ public:
             return;
         }
         std::lock_guard lock(mutex_);
-        std::erase_if(listeners_, [&](const Listener& listener) { return listener.id == connection.id(); });
+        std::erase_if(listeners_,
+                      [&](const Listener& listener) { return listener.id == connection.id(); });
     }
 
     /// @brief Removes every connected listener.

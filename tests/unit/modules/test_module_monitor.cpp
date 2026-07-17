@@ -7,9 +7,9 @@
 // module list can be changed between poll() calls.
 // ==============================================================================
 
-#include <gtest/gtest.h>
-
 #include <rmg/modules/module_monitor.hpp>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -33,13 +33,16 @@ public:
     }
 
     [[nodiscard]] rmg::core::Result<std::size_t>
-    readMemory(const ProcessHandle&, rmg::core::Address, rmg::core::MutableByteView) const override {
-        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::NotSupported, "not used in this test");
+    readMemory(const ProcessHandle&, rmg::core::Address,
+               rmg::core::MutableByteView) const override {
+        return rmg::core::fail<std::size_t>(rmg::core::ErrorCode::NotSupported,
+                                            "not used in this test");
     }
 
     [[nodiscard]] rmg::core::Result<rmg::core::MemoryProtection>
     queryProtection(const ProcessHandle&, rmg::core::Address) const override {
-        return rmg::core::fail<rmg::core::MemoryProtection>(rmg::core::ErrorCode::NotSupported, "not used");
+        return rmg::core::fail<rmg::core::MemoryProtection>(rmg::core::ErrorCode::NotSupported,
+                                                            "not used");
     }
 
     [[nodiscard]] std::size_t pageSize() const noexcept override { return 4096; }
@@ -79,8 +82,10 @@ TEST(ModuleMonitorTest, SubsequentPollWithNoChangesEmitsNoEvents) {
 
     int loadedCount = 0;
     int unloadedCount = 0;
-    monitor.onModuleLoaded.connect([&loadedCount](const rmg::modules::ModuleInfo&) { ++loadedCount; });
-    monitor.onModuleUnloaded.connect([&unloadedCount](const rmg::modules::ModuleInfo&) { ++unloadedCount; });
+    monitor.onModuleLoaded.connect(
+        [&loadedCount](const rmg::modules::ModuleInfo&) { ++loadedCount; });
+    monitor.onModuleUnloaded.connect(
+        [&unloadedCount](const rmg::modules::ModuleInfo&) { ++unloadedCount; });
 
     ASSERT_TRUE(monitor.poll(*handle).has_value());
 
@@ -102,7 +107,8 @@ TEST(ModuleMonitorTest, NewlyLoadedModuleTriggersOnModuleLoaded) {
     monitor.onModuleLoaded.connect(
         [&newlyLoaded](const rmg::modules::ModuleInfo& info) { newlyLoaded.push_back(info.name); });
 
-    platform.modules.push_back(NativeModuleInfo{"injected.dll", "/path/injected.dll", 0x3000, 0x100});
+    platform.modules.push_back(
+        NativeModuleInfo{"injected.dll", "/path/injected.dll", 0x3000, 0x100});
     ASSERT_TRUE(monitor.poll(*handle).has_value());
 
     ASSERT_EQ(newlyLoaded.size(), 1U);

@@ -9,10 +9,10 @@
 
 #pragma once
 
+#include <rmg/core/types.hpp>
+
 #include <string>
 #include <string_view>
-
-#include <rmg/core/types.hpp>
 
 namespace rmg::utils {
 

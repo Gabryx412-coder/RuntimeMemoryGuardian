@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/hooks/eat_hook_detector.hpp>
 #include <rmg/hooks/hook_types.hpp>
@@ -21,6 +19,8 @@
 #include <rmg/memory/memory_scanner.hpp>
 #include <rmg/modules/module_info.hpp>
 #include <rmg/platform/process_handle.hpp>
+
+#include <vector>
 
 namespace rmg::hooks {
 

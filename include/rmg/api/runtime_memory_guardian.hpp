@@ -27,10 +27,6 @@
 
 #pragma once
 
-#include <memory>
-#include <optional>
-#include <vector>
-
 #include <rmg/core/error.hpp>
 #include <rmg/export.hpp>
 #include <rmg/hooks/hook_detector.hpp>
@@ -43,6 +39,10 @@
 #include <rmg/platform/platform_traits.hpp>
 #include <rmg/platform/process_handle.hpp>
 #include <rmg/process/process_monitor.hpp>
+
+#include <memory>
+#include <optional>
+#include <vector>
 
 namespace rmg::api {
 
@@ -65,7 +65,8 @@ public:
     /// @param hashProvider Hash algorithm to use for integrity baselines
     ///                     and verification. Defaults to SHA-256.
     [[nodiscard]] static rmg::core::Result<RuntimeMemoryGuardian>
-    createForSelf(std::unique_ptr<rmg::integrity::IHashProvider> hashProvider = rmg::integrity::makeDefaultHashProvider());
+    createForSelf(std::unique_ptr<rmg::integrity::IHashProvider> hashProvider =
+                      rmg::integrity::makeDefaultHashProvider());
 
     /// @brief Creates a guardian monitoring an external process identified
     ///        by @p processId. Requires sufficient OS privileges to open
@@ -73,7 +74,8 @@ public:
     ///        rmg::platform::ProcessHandle::open).
     [[nodiscard]] static rmg::core::Result<RuntimeMemoryGuardian>
     createForProcess(rmg::platform::NativeProcessId processId,
-                     std::unique_ptr<rmg::integrity::IHashProvider> hashProvider = rmg::integrity::makeDefaultHashProvider());
+                     std::unique_ptr<rmg::integrity::IHashProvider> hashProvider =
+                         rmg::integrity::makeDefaultHashProvider());
 
     ~RuntimeMemoryGuardian();
 
@@ -109,12 +111,14 @@ public:
     /// @brief Provides direct access to the underlying ProcessMonitor for
     ///        continuous monitoring, event subscription, and configuration.
     [[nodiscard]] rmg::process::ProcessMonitor& monitor() noexcept { return *processMonitor_; }
-    [[nodiscard]] const rmg::process::ProcessMonitor& monitor() const noexcept { return *processMonitor_; }
+    [[nodiscard]] const rmg::process::ProcessMonitor& monitor() const noexcept {
+        return *processMonitor_;
+    }
 
 private:
     RuntimeMemoryGuardian(rmg::platform::ProcessHandle handle,
-                         std::unique_ptr<rmg::platform::IPlatformTraits> platformTraits,
-                         std::unique_ptr<rmg::integrity::IHashProvider> hashProvider);
+                          std::unique_ptr<rmg::platform::IPlatformTraits> platformTraits,
+                          std::unique_ptr<rmg::integrity::IHashProvider> hashProvider);
 
     rmg::platform::ProcessHandle handle_;
     std::unique_ptr<rmg::platform::IPlatformTraits> platformTraits_;
