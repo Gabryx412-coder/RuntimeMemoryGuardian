@@ -36,12 +36,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build ${{ matrix.cc }} ${{ matrix.cxx }}
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            sudo apt-get install -y libc++-18-dev libc++abi-18-dev
+          fi
 
       - name: Configure CMake
         env:
           CC: ${{ matrix.cc }}
           CXX: ${{ matrix.cxx }}
         run: |
+          EXTRA_FLAGS=""
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            EXTRA_FLAGS="-DCMAKE_CXX_FLAGS=-stdlib=libc++"
+          fi
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DRMG_BUILD_TESTS=ON \
@@ -49,7 +56,8 @@ jobs:
             -DRMG_BUILD_BENCHMARKS=OFF \
             -DRMG_BUILD_TOOLS=ON \
             -DRMG_WARNINGS_AS_ERRORS=ON \
-            -DRMG_ENABLE_SANITIZERS=${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }}
+            -DRMG_ENABLE_SANITIZERS=${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }} \
+            $EXTRA_FLAGS
 
       - name: Build
         run: cmake --build build --parallel
