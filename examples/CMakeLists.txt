@@ -6,6 +6,7 @@ function(rmg_add_example example_name)
     add_executable(${example_name} ${ARGN})
     target_link_libraries(${example_name} PRIVATE RMG::rmg)
     rmg_enable_warnings(${example_name})
+    rmg_enable_sanitizers(${example_name})
     set_target_properties(${example_name} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples"
     )
