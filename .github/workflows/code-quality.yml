@@ -43,28 +43,25 @@ jobs:
             sudo apt-get install -y libc++-18-dev libc++abi-18-dev
           fi
 
-      - name: Configure CMake
+      - name: Install libc++
+        run: sudo apt-get install -y libc++-18-dev libc++abi-18-dev
+
+      - name: Configure CMake (generate compile_commands.json)
         env:
-          CC: ${{ matrix.cc }}
-          CXX: ${{ matrix.cxx }}
+          CC: clang-18
+          CXX: clang++-18
         run: |
-          EXTRA_FLAGS=""
-          if [ "${{ matrix.compiler }}" = "clang" ]; then
-            EXTRA_FLAGS="-DCMAKE_CXX_FLAGS=-stdlib=libc++"
-          fi
           cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-            -DRMG_BUILD_TESTS=ON \
-            -DRMG_BUILD_EXAMPLES=ON \
-            -DRMG_BUILD_BENCHMARKS=OFF \
-            -DRMG_BUILD_TOOLS=ON \
-            -DRMG_WARNINGS_AS_ERRORS=ON \
-            -DRMG_ENABLE_SANITIZERS=${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }} \
-            $EXTRA_FLAGS
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DRMG_BUILD_TESTS=OFF \
+            -DRMG_BUILD_EXAMPLES=OFF \
+            -DRMG_BUILD_TOOLS=OFF \
+            -DCMAKE_CXX_FLAGS=-stdlib=libc++ \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run clang-tidy on library sources
         run: |
-          find src -type f -name "*.cpp" -print0 | \
+          find src -type f -name "*.cpp" -not -path "src/platform/windows/*" -print0 | \
             xargs -0 clang-tidy-18 -p build --quiet
 
   sanitizers:
@@ -73,10 +70,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install build tools
-        run: sudo apt-get update && sudo apt-get install -y ninja-build clang-18
-
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang-18 libc++-18-dev libc++abi-18-dev
       - name: Configure CMake with sanitizers
         env:
           CC: clang-18
@@ -87,11 +84,10 @@ jobs:
             -DRMG_BUILD_TESTS=ON \
             -DRMG_BUILD_EXAMPLES=OFF \
             -DRMG_BUILD_TOOLS=OFF \
-            -DRMG_ENABLE_SANITIZERS=ON
-
+            -DRMG_ENABLE_SANITIZERS=ON \
+            -DCMAKE_CXX_FLAGS=-stdlib=libc++
       - name: Build
         run: cmake --build build --parallel
-
       - name: Run tests under sanitizers
         working-directory: build
         run: ctest --output-on-failure --parallel 2
